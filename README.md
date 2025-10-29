@@ -1,94 +1,113 @@
-# 10x Astro Starter
+# BuddyFinder
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+## Table of Contents
+
+- [BuddyFinder](#buddyfinder)
+  - [Table of Contents](#table-of-contents)
+  - [Project Description](#project-description)
+  - [Tech Stack](#tech-stack)
+    - [Frontend](#frontend)
+    - [Backend \& Database](#backend--database)
+    - [Maps](#maps)
+  - [Getting Started Locally](#getting-started-locally)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Available Scripts](#available-scripts)
+  - [Project Scope](#project-scope)
+  - [Project Status](#project-status)
+  - [License](#license)
+
+## Project Description
+
+BuddyFinder is a web application designed to connect amateur athletes and sports enthusiasts. It addresses the common challenge of finding training partners with similar skill levels, interests, and geographical proximity. Users can create a profile, specify their favorite sports and skill levels, and discover others in their area to team up with for activities.
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+### Frontend
 
-## Prerequisites
+- **Astro 5**: For building fast, content-focused pages and server-side API endpoints.
+- **React 19**: Used for creating dynamic and interactive UI components.
+- **TypeScript 5**: Ensures type safety across the application.
+- **Tailwind CSS 4**: A utility-first CSS framework for rapid UI development.
+- **Shadcn/ui**: A collection of pre-built, accessible UI components.
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+### Backend & Database
 
-## Getting Started
+- **Supabase**: Backend-as-a-Service (BaaS) for authentication, database, and storage.
+- **PostgreSQL with PostGIS**: For storing and querying geospatial data.
 
-1. Clone the repository:
+### Maps
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+- **OpenStreetMaps (OSM)**: Provides free and open map data.
+- **Leaflet.js**: A lightweight JavaScript library for interactive maps.
 
-2. Install dependencies:
+## Getting Started Locally
 
-```bash
-npm install
-```
+### Prerequisites
 
-3. Run the development server:
+- **Node.js**: Version `22.14.0` is required. You can use a version manager like `nvm` to switch to the correct version.
+- **npm**: Should be installed with Node.js.
 
-```bash
-npm run dev
-```
+### Installation
 
-4. Build for production:
+1. **Clone the repository:**
 
-```bash
-npm run build
-```
+    ```bash
+    git clone https://github.com/your-username/buddyfinder.git
+    cd buddyfinder
+    ```
+
+2. **Install dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+3. **Set up environment variables:**
+    - Create a `.env` file by copying the example file:
+
+      ```bash
+      cp .env.example .env
+      ```
+
+    - Fill in the required environment variables in the `.env` file (e.g., Supabase URL and keys).
+
+4. **Run the development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+    The application will be available at `http://localhost:4321`.
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the application for production.
+- `npm run preview`: Previews the production build locally.
+- `npm run lint`: Lints the codebase for errors.
+- `npm run lint:fix`: Lints the codebase and automatically fixes issues.
+- `npm run format`: Formats the code using Prettier.
 
-## Project Structure
+## Project Scope
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
+The MVP (Minimum Viable Product) of BuddyFinder includes the following features:
 
-## AI Development Support
+- **User Account Management**: Registration, login, and logout.
+- **User Profile Management**:
+  - Select sports from a predefined list.
+  - Define skill-based parameters for each sport.
+  - Set a primary location and travel radius.
+  - Optionally add links to social media profiles.
+- **Partner Matching**:
+  - View a list of users whose travel radius intersects with yours.
+  - User list includes username, email, sports, and skill parameters.
+  - Results are sorted by distance and the number of shared sports.
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+## Project Status
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
-
-### Cursor IDE
-
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+This project is currently **in development**.
 
 ## License
 
-MIT
+This project is licensed under the **MIT License**.
