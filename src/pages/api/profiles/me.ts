@@ -1,0 +1,90 @@
+import type { APIRoute } from "astro";
+import { ProfileService } from "../../../lib/services/profile.service";
+import { validateProfileUpdate } from "../../../lib/dto/profile.dto";
+import { createErrorResponse, ApiErrorCode } from "../../../lib/api/errors";
+
+export const prerender = false;
+
+export const GET: APIRoute = async ({ locals }) => {
+  const { session, supabase } = locals;
+
+  // Validate authentication
+  if (!session?.user) {
+    return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
+  }
+
+  const profileService = new ProfileService(supabase);
+
+  try {
+    const profile = await profileService.getCurrentUserProfile(session.user.id);
+
+    if (!profile) {
+      return createErrorResponse(ApiErrorCode.NOT_FOUND, "Profile not found", "PROFILE_NOT_FOUND");
+    }
+
+    return new Response(JSON.stringify(profile), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch {
+    // We log the error in the middleware, no need to duplicate logging here
+    return createErrorResponse(
+      ApiErrorCode.INTERNAL_ERROR,
+      "An unexpected error occurred while fetching your profile",
+      "INTERNAL_SERVER_ERROR"
+    );
+  }
+};
+
+/**
+ * PATCH /api/profiles/me
+ * Updates the current user's profile
+ */
+export const PATCH: APIRoute = async ({ request, locals }) => {
+  const { session, supabase } = locals;
+
+  // Validate authentication
+  if (!session?.user) {
+    return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
+  }
+
+  try {
+    // Parse and validate request body
+    const body = await request.json();
+    const validatedData = validateProfileUpdate(body);
+
+    // Initialize service and update profile
+    const profileService = new ProfileService(supabase);
+    const updatedProfile = await profileService.updateUserProfile(session.user.id, validatedData);
+
+    return new Response(JSON.stringify(updatedProfile), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error: unknown) {
+    // Handle validation errors
+    if (error instanceof Error && error.name === "ZodError") {
+      return createErrorResponse(ApiErrorCode.VALIDATION_ERROR, "Invalid request data", "VALIDATION_ERROR");
+    }
+
+    // Handle database errors - error is from Supabase
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const { code } = error as { code: string };
+      if (code === "PGRST301") {
+        return createErrorResponse(ApiErrorCode.NOT_FOUND, "Profile not found", "PROFILE_NOT_FOUND");
+      }
+    }
+
+    // Log unexpected errors in development only
+    if (process.env.NODE_ENV === "development") {
+      // eslint-disable-next-line no-console
+      console.error("Error updating profile:", error);
+    }
+
+    return createErrorResponse(
+      ApiErrorCode.INTERNAL_ERROR,
+      "An unexpected error occurred while updating your profile",
+      "INTERNAL_SERVER_ERROR"
+    );
+  }
+};
