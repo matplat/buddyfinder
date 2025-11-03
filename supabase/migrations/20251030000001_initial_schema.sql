@@ -57,12 +57,14 @@ create index profiles_location_idx on public.profiles using gist (location);
 create index profiles_social_links_idx on public.profiles using gin (social_links);
 
 -- profiles table policies
+-- TODO: start: this should be removed later
 -- allow anyone to view profiles
 create policy "Anyone can view profiles"
     on public.profiles
     for select
     to anon
     using (true);
+-- TODO: end
 
 create policy "Authenticated users can view profiles"
     on public.profiles
