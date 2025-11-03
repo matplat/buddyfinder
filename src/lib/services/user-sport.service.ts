@@ -1,5 +1,6 @@
-import type { UserSportDto, AddUserSportCommand } from "../../types";
-import type { supabaseClient } from "../../db/supabase.client";
+import type { Json } from "@/db/database.types";
+import type { UserSportDto, AddUserSportCommand, UpdateUserSportCommand } from "@/types";
+import type { supabaseClient } from "@/db/supabase.client";
 
 /**
  * Error thrown when attempting to add a sport that doesn't exist
@@ -21,8 +22,78 @@ export class DuplicateSportError extends Error {
   }
 }
 
+/**
+ * Error thrown when attempting to update a sport that user doesn't have
+ */
+export class UserSportNotFoundError extends Error {
+  constructor(sportId: number) {
+    super(`Sport with id ${sportId} not found in user's profile`);
+    this.name = "UserSportNotFoundError";
+  }
+}
+
 export class UserSportService {
   constructor(private readonly supabase: typeof supabaseClient) {}
+
+  /**
+   * Updates a sport in user's profile
+   *
+   * @param userId The ID of the user whose sport to update
+   * @param sportId The ID of the sport to update
+   * @param command The update command containing the new values
+   * @throws {UserSportNotFoundError} If user doesn't have this sport
+   * @throws {Error} If userId is not provided
+   * @throws {PostgrestError} If the database query fails
+   * @returns Updated UserSportDto
+   */
+  async updateUserSport(userId: string, sportId: number, command: UpdateUserSportCommand): Promise<UserSportDto> {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+    // Build update object based on provided fields
+    const updateData: { parameters?: Json; custom_range_km?: number | null } = {};
+
+    if (command.parameters) {
+      updateData.parameters = command.parameters;
+    }
+    if (command.custom_range_km !== undefined) {
+      updateData.custom_range_km = command.custom_range_km;
+    }
+
+    // Update the sport and return updated data
+    const { data: updatedUserSport, error: updateError } = await this.supabase
+      .from("user_sports")
+      .update(updateData)
+      .eq("user_id", userId)
+      .eq("sport_id", sportId)
+      .select(
+        `
+        sport_id,
+        parameters,
+        custom_range_km,
+        sports (
+          name
+        )
+      `
+      )
+      .single();
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    if (!updatedUserSport) {
+      throw new UserSportNotFoundError(sportId);
+    }
+
+    return {
+      sport_id: updatedUserSport.sport_id,
+      name: updatedUserSport.sports.name,
+      parameters: updatedUserSport.parameters,
+      custom_range_km: updatedUserSport.custom_range_km,
+    };
+  }
 
   /**
    * Retrieves all sports associated with a user, including their custom parameters and ranges
@@ -138,5 +209,38 @@ export class UserSportService {
       parameters: newUserSport.parameters,
       custom_range_km: newUserSport.custom_range_km,
     };
+  }
+
+  /**
+   * Deletes a sport from user's profile
+   * @param userId The ID of the user whose sport to delete
+   * @param sportId The ID of the sport to delete
+   * @throws {UserSportNotFoundError} If user doesn't have this sport
+   * @throws {Error} If userId or sportId is not provided
+   * @throws {PostgrestError} If the database operation fails
+   */
+  async deleteUserSport(userId: string, sportId: number): Promise<void> {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+    if (!sportId || isNaN(sportId)) {
+      throw new Error("Valid sport ID is required");
+    }
+
+    // Delete the sport from user's profile
+    const { error, count } = await this.supabase
+      .from("user_sports")
+      .delete()
+      .match({ user_id: userId, sport_id: sportId });
+
+    // Handle database errors
+    if (error) {
+      throw error;
+    }
+
+    // If no rows were deleted, sport was not found for this user
+    if (!count || count === 0) {
+      throw new UserSportNotFoundError(sportId);
+    }
   }
 }
