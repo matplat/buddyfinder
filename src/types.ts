@@ -5,7 +5,7 @@
  * the database.
  */
 
-import type { Tables, TablesInsert } from "./db/database.types";
+import type { Tables, TablesInsert } from "@/db/database.types";
 
 // ############################################################################
 // #

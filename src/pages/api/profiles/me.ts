@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
-import { ProfileService } from "../../../lib/services/profile.service";
-import { validateProfileUpdate } from "../../../lib/dto/profile.dto";
-import { createErrorResponse, ApiErrorCode } from "../../../lib/api/errors";
+import { ProfileService } from "@/lib/services/profile.service";
+import { validateProfileUpdate } from "@/lib/dto/profile.dto";
+import { createErrorResponse, ApiErrorCode } from "@/lib/api/errors";
 
 export const prerender = false;
 

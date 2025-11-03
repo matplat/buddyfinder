@@ -1,5 +1,5 @@
-import type { ProfileDto, UpdateProfileCommand } from "../../types";
-import type { supabaseClient } from "../../db/supabase.client";
+import type { ProfileDto, UpdateProfileCommand } from "@/types";
+import type { supabaseClient } from "@/db/supabase.client";
 
 export class ProfileService {
   constructor(private readonly supabase: typeof supabaseClient) {}

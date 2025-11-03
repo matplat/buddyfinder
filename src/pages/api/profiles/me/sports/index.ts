@@ -1,11 +1,7 @@
 import type { APIRoute } from "astro";
-import {
-  UserSportService,
-  SportNotFoundError,
-  DuplicateSportError,
-} from "../../../../../lib/services/user-sport.service";
-import { createErrorResponse, createValidationErrorResponse, ApiErrorCode } from "../../../../../lib/api/errors";
-import { AddUserSportCommand } from "../../../../../lib/dto/user-sport.dto";
+import { UserSportService, SportNotFoundError, DuplicateSportError } from "@/lib/services/user-sport.service";
+import { createErrorResponse, createValidationErrorResponse, ApiErrorCode } from "@/lib/api/errors";
+import { AddUserSportCommand } from "@/lib/dto/user-sport.dto";
 
 export const prerender = false;
 
