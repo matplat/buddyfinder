@@ -18,7 +18,13 @@ ProfileView (Komponent-strona)
 └── Accordion (shadcn/ui, z dwiema sekcjami)
     ├── AccordionItem (dla danych profilowych)
     │   └── ProfileDataSection
-    │       └── Button -> otwiera SocialMediaEditorDialog
+    │       ├── Input (dla display_name)
+    │       ├── div (lista komponentów SocialLinkBadge)
+    │       │   └── SocialLinkBadge
+    │       │       ├── Button (Edit) -> otwiera SocialLinkEditorDialog
+    │       │       └── Button (Delete) -> otwiera ConfirmationDialog
+    │       ├── Button ("Dodaj link") -> otwiera SocialMediaEditorDialog
+    │       └── Button ("Zapisz") -> zapisanie zmian z display_name
     └── AccordionItem (dla sportów)
         └── ProfileSportsSection
             ├── Button -> otwiera SportEditorDialog (w trybie dodawania)
@@ -30,6 +36,7 @@ ProfileView (Komponent-strona)
 
 - **Dialogi (renderowane na poziomie `ProfileView`):**
   - `SocialMediaEditorDialog`
+  - `SocialLinkEditorDialog`
   - `SportEditorDialog`
   - `ConfirmationDialog`
 
@@ -38,29 +45,41 @@ ProfileView (Komponent-strona)
 ### `ProfileView`
 
 - **Opis:** Główny kontener widoku. Odpowiada za pobranie wszystkich niezbędnych danych, zarządzanie stanem (za pomocą hooka `useProfileView`) oraz renderowanie głównych sekcji i dialogów.
-- **Główne elementy:** `Accordion`, `ProfileDataSection`, `ProfileSportsSection`, `SocialMediaEditorDialog`, `SportEditorDialog`, `ConfirmationDialog`.
+- **Główne elementy:** `Accordion`, `ProfileDataSection`, `ProfileSportsSection`, `SocialMediaEditorDialog`, `SocialLinkEditorDialog`, `SportEditorDialog`, `ConfirmationDialog`.
 - **Obsługiwane interakcje:** Brak bezpośrednich. Zarządza stanem dla komponentów podrzędnych.
 - **Typy:** `ProfileViewModel`, `UserSportViewModel`, `SportDto`.
 - **Propsy:** Brak.
 
 ### `ProfileDataSection`
 
-- **Opis:** Wyświetla podstawowe dane użytkownika (e-mail, nazwa użytkownika) oraz te edytowalne (nazwa wyświetlana) oraz listę linków do mediów społecznościowych.
-- **Główne elementy:** Elementy tekstowe (`<p>`, `<a>`), `Input` do wyświetlania i zmiany `display_name`, `Button` do otwarcia edycji.
-- **Obsługiwane interakcje:** Kliknięcie przycisku "Edytuj dane" otwiera `SocialMediaEditorDialog`.
+- **Opis:** Wyświetla podstawowe dane użytkownika (nazwa wyświetlana, nazwa użytkownika) oraz listę linków do mediów społecznościowych w formie komponentów `SocialLinkBadge`. Umożliwia bezpośrednią edycję nazwy wyświetlanej oraz dodawanie nowych linków.
+- **Główne elementy:** Elementy tekstowe (`<p>`), `Input` dla `display_name`, lista komponentów `SocialLinkBadge`, `Button` do otwarcia `SocialMediaEditorDialog` (do dodawania nowych linków).
+- **Obsługiwane interakcje:** Edycja `display_name`, otwarcie `SocialMediaEditorDialog`, inicjowanie edycji pojedynczego linku, inicjowanie usunięcia pojedynczego linku.
 - **Typy:** `ProfileViewModel`.
-- **Propsy:** `profile: ProfileViewModel`, `onEdit: () => void`.
+- **Propsy:** `profile: ProfileViewModel`, `onUpdateDisplayName: (newName: string) => void`, `onAddSocialLink: () => void`, `onEditSocialLink: (platform: string, url: string) => void`, `onDeleteSocialLink: (platform: string) => void`.
 
+### `SocialLinkBadge`
 
+- **Opis:** Kompaktowy komponent wyświetlający pojedynczy link do medium społecznościowego, zawierający ikonę platformy, jej nazwę oraz przyciski do edycji i usunięcia.
+- **Główne elementy:** Ikona platformy (np. z `lucide-react`), nazwa platformy (`<p>`), `Button` z ikoną ołówka (edycja), `Button` z ikoną kosza (usunięcie) (oba buttony powinny mieć możliwość być wyłączone i niewyświetlane).
+- **Obsługiwane interakcje:** Kliknięcie ikony edycji, kliknięcie ikony usunięcia.
+- **Propsy:** `platform: string`, `url: string`, `onEdit: (platform: string, url: string) => void`, `onDelete: (platform: string) => void`.
+
+### `SocialLinkEditorDialog`
+
+- **Opis:** Modal z formularzem do edycji *pojedynczego* linku social media.
+- **Główne elementy:** `Dialog`, `Form`, `Input` (dla URL linku), `Button` ("Zapisz", "Anuluj").
+- **Obsługiwana walidacja:** Wartość w polu linku musi być poprawnym adresem URL.
+- **Typy:** `UpdateProfileCommand` (do wysłania zaktualizowanego `social_links`).
+- **Propsy:** `isOpen: boolean`, `platform: string`, `url: string`, `onSave: (platform: string, newUrl: string) => void`, `onClose: () => void`.
 
 ### `SocialMediaEditorDialog`
 
-- **Opis:** Modal z formularzem do edycji linków social media.
-- **Główne elementy:** `Dialog`, `Form`, `Input` (dla każdego linku), `Button` ("Zapisz", "Anuluj"), `Select` (platforma z dostępnych).
-- **Obsługiwane interakcje:** Zapisanie formularza, anulowanie.
-- **Obsługiwana walidacja:** Wartości w polach linków muszą być poprawnymi adresami URL.
-- **Typy:** `ProfileDto`, `UpdateProfileCommand`.
-- **Propsy:** `isOpen: boolean`, `profile: ProfileViewModel`, `onSave: (data: UpdateProfileCommand) => void`, `onClose: () => void`.
+- **Opis:** Modal z formularzem do dodawania *nowych* linków social media. (Edycja istniejących linków odbywa się przez `SocialLinkEditorDialog`).
+- **Główne elementy:** `Dialog`, `Form`, `Input` (dla nowego linku), `Select` (dla platformy nowego linku), `Button` ("Zapisz", "Anuluj").
+- **Obsługiwana walidacja:** Nowy link musi być poprawnym URL i mieć wybraną platformę.
+- **Typy:** `UpdateProfileCommand`.
+- **Propsy:** `isOpen: boolean`, `onSave: (platform: string, url: string) => void`, `onClose: () => void`.
 
 ### `ProfileSportsSection`
 
@@ -84,13 +103,13 @@ ProfileView (Komponent-strona)
 - **Obsługiwana walidacja:**
   - `sport_id`: Pole wymagane w trybie dodawania.
   - `parameters`: Wszystkie pola parametrów dla danego sportu są wymagane.
-  - `custom_range_km`: Wartość numeryczna, opcjonalnie w zakresie 1-100.
-- **Typy:** `UserSportDto`, `AddUserSportCommand`, `UpdateUserSportCommand`, `SportDto`.
+  - `custom_range_km`: Opcjonalna wartość numeryczna, w zakresie 1-100.
+- **Typy:** `AddUserSportCommand`, `UpdateUserSportCommand`, `SportDto`.
 - **Propsy:** `isOpen: boolean`, `mode: 'add' | 'edit'`, `allSports: SportDto[]`, `sportToEdit?: UserSportViewModel`, `onSave: (data: AddUserSportCommand | UpdateUserSportCommand) => void`, `onClose: () => void`.
 
 ### `ConfirmationDialog`
 
-- **Opis:** Generyczny modal do potwierdzania akcji destrukcyjnych.
+- **Opis:** Generyczny modal do potwierdzania akcji destrukcyjnych (usunięcia sportu lub linku).
 - **Główne elementy:** `Dialog` z tytułem, opisem i przyciskami "Potwierdź" i "Anuluj".
 - **Propsy:** `isOpen: boolean`, `title: string`, `description: string`, `onConfirm: () => void`, `onClose: () => void`.
 
@@ -143,10 +162,13 @@ Cała logika biznesowa, operacje na danych oraz zarządzanie stanem widoku zosta
     - `isLoading: boolean` (stan ładowania danych początkowych)
     - `isSubmitting: boolean` (stan podczas wysyłania formularzy)
     - `error: Error | null`
-    - `dialogState: { type: 'sport' | 'social' | 'confirm' | null, mode?: 'add' | 'edit', data?: any }` (do zarządzania otwartymi dialogami i ich stanem)
+    - `dialogState: { type: 'sport' | 'socialAdd' | 'socialEdit' | 'confirm' | null, data?: any }`
   - **Udostępniane funkcje:**
     - `fetchInitialData()`: Pobiera wszystkie dane z API.
-    - `updateProfile(data: UpdateProfileCommand)`: Aktualizuje profil użytkownika.
+    - `updateProfile(data: UpdateProfileCommand)`: Aktualizuje profil użytkownika (w tym `display_name` i `social_links`).
+    - `addSocialLink(platform: string, url: string)`: Dodaje nowy link social media.
+    - `updateSocialLink(platform: string, newUrl: string)`: Aktualizuje URL konkretnego linku social media.
+    - `deleteSocialLink(platform: string)`: Usuwa pojedynczy link social media.
     - `addSport(data: AddUserSportCommand)`: Dodaje nowy sport.
     - `updateSport(sportId: number, data: UpdateUserSportCommand)`: Aktualizuje istniejący sport.
     - `deleteSport(sportId: number)`: Usuwa sport.
@@ -171,21 +193,25 @@ Po każdej udanej operacji modyfikacji danych, odpowiednia część stanu zostan
 
 ## 8. Interakcje użytkownika
 
-- **Edycja danych profilowych:** Użytkownik może zmienić nazwę wyswietlaną i potwierdzić przyciskiem "Zapisz" na dole akordeonu "Dane".
-- **Edycja social mediów:** Użytkownik klika "Dodaj link", co otwiera `SocialMediaEditorDialog` z formularzem. Po zapisaniu, dane są wysyłane do API, a po sukcesie dialog jest zamykany, a widok odświeżany.
+- **Edycja nazwy wyświetlanej:** Użytkownik edytuje `display_name` bezpośrednio w `ProfileDataSection`, a zmiana jest zapisywana po opuszczeniu pola lub kliknięciu przycisku "Zapisz".
+- **Dodawanie linku social media:** Użytkownik klika "Dodaj link", co otwiera `SocialMediaEditorDialog`. Po wypełnieniu formularza i zapisaniu, nowy link jest dodawany do profilu, a widok odświeżany.
+- **Edycja pojedynczego linku social media:** Użytkownik klika ikonę ołówka na `SocialLinkBadge`, co otwiera `SocialLinkEditorDialog` z predefiniowanym linkiem. Po edycji i zapisaniu, link jest aktualizowany w profilu, a widok odświeżany.
+- **Usuwanie linku social media:** Użytkownik klika ikonę kosza na `SocialLinkBadge`, co otwiera `ConfirmationDialog`. Po potwierdzeniu, link jest usuwany z profilu, a widok się odświeża.
 - **Dodawanie sportu:** Użytkownik klika "Dodaj sport", co otwiera `SportEditorDialog` w trybie 'add'. Wybiera sport z listy, co dynamicznie generuje pola na parametry. Po wypełnieniu i zapisaniu, dane są wysyłane, a lista sportów się aktualizuje.
 - **Edycja sportu:** Użytkownik klika ikonę edycji na `SportBadge`, co otwiera `SportEditorDialog` w trybie 'edit' z wypełnionymi danymi. Proces zapisu jest analogiczny do dodawania.
-- **Usuwanie sportu:** Użytkownik klika ikonę kosza, co otwiera `ConfirmationDialog`. Po potwierdzeniu, sport jest usuwany, a lista się odświeża.
+- **Usuwanie sportu:** Użytkownik klika ikonę kosza na `SportBadge`, co otwiera `ConfirmationDialog`. Po potwierdzeniu, sport jest usuwany, a lista się odświeża.
 
 ## 9. Warunki i walidacja
 
 Walidacja będzie przeprowadzana po stronie klienta przed wysłaniem żądania do API, aby zapewnić szybką informację zwrotną.
 
-- **`SocialMediaEditorDialog`:** Pola linków social media będą walidowane pod kątem formatu URL.
+- **`ProfileDataSection` (dla `display_name`):** `display_name` nie może być pusty.
+- **`SocialLinkEditorDialog`:** Pole linku social media będzie walidowane pod kątem formatu URL.
+- **`SocialMediaEditorDialog`:** Nowy link musi być poprawnym URL i mieć wybraną platformę.
 - **`SportEditorDialog`:**
   - W trybie dodawania, wybór sportu z listy jest wymagany.
-  - Wszystkie dynamicznie generowane pola parametrów są wymagane.
-  - `custom_range_km` musi być liczbą z zakresu 1-100, lub puste.
+  - Wszystkie dynamicznie generowane pola parametrów są wymagane i muszą być liczbami.
+  - `custom_range_km` musi być liczbą lub puste.
 - Przyciski "Zapisz" w formularzach będą nieaktywne (`disabled`), dopóki wszystkie warunki walidacji nie zostaną spełnione.
 
 ## 10. Obsługa błędów
@@ -198,11 +224,13 @@ Walidacja będzie przeprowadzana po stronie klienta przed wysłaniem żądania d
 
 ## 11. Kroki implementacji
 
-1. **Utworzenie struktury plików:** Stworzenie plików dla komponentów: `ProfileView.tsx`, `ProfileDataSection.tsx`, `ProfileSportsSection.tsx`, `SportBadge.tsx` oraz dialogów.
-2. **Implementacja hooka `useProfileView`:** Zdefiniowanie stanu, implementacja funkcji do pobierania danych (`fetchInitialData`) oraz pustych funkcji-handlerów dla akcji CRUD.
-3. **Budowa `ProfileView` i sekcji:** Stworzenie layoutu z `Accordion` i podpięcie `ProfileDataSection` oraz `ProfileSportsSection`. Implementacja stanów ładowania (Skeletons) i błędów.
-4. **Implementacja `SportEditorDialog`:** Stworzenie formularza z dynamicznym renderowaniem pól na podstawie konfiguracji parametrów sportów. Podpięcie logiki dodawania i edycji do hooka.
-5. **Implementacja `SocialMediaEditorDialog`:** Stworzenie prostszego formularza do edycji danych profilu i podpięcie logiki.
-6. **Implementacja `ConfirmationDialog`:** Stworzenie generycznego komponentu i podpięcie go do akcji usuwania sportu.
-7. **Finalizacja logiki w `useProfileView`:** Uzupełnienie funkcji-handlerów o wywołania API, obsługę `isSubmitting`, odświeżanie danych oraz wyświetlanie powiadomień (Toast).
-8. **Stylowanie i testowanie:** Dopracowanie wyglądu zgodnie z mobile-first i przetestowanie wszystkich ścieżek interakcji użytkownika, włączając w to przypadki brzegowe i obsługę błędów.
+1. **Utworzenie struktury plików:** Stworzenie plików dla komponentów: `ProfileView.tsx`, `ProfileDataSection.tsx`, `ProfileSportsSection.tsx`, `SportBadge.tsx`, `SocialLinkBadge.tsx`, `SocialLinkEditorDialog.tsx`, `SocialMediaEditorDialog.tsx` oraz `ConfirmationDialog.tsx`.
+2. **Implementacja hooka `useProfileView`:** Zdefiniowanie stanu, implementacja funkcji do pobierania danych (`fetchInitialData`) oraz funkcji-handlerów dla akcji CRUD, w tym `updateProfile`, `addSocialLink`, `updateSocialLink`, `deleteSocialLink`, `addSport`, `updateSport`, `deleteSport`.
+3. **Budowa `ProfileView` i sekcji:** Stworzenie layoutu z `Accordion` i podpięcie sekcji. Implementacja stanów ładowania (Skeletons) i błędów.
+4. **Implementacja `SocialLinkBadge`:** Stworzenie komponentu wraz z mapowaniem ikon dla poszczególnych platform.
+5. **Implementacja `SocialLinkEditorDialog`:** Stworzenie formularza do edycji pojedynczego linku social media.
+6. **Implementacja `SocialMediaEditorDialog`:** Stworzenie formularza do dodawania nowych linków social media.
+7. **Implementacja `SportEditorDialog`:** Stworzenie formularza z dynamicznym renderowaniem pól na podstawie konfiguracji parametrów sportów. Podpięcie logiki dodawania i edycji do hooka.
+8. **Implementacja `ConfirmationDialog`:** Stworzenie generycznego komponentu i podpięcie go do akcji usuwania sportu i linku.
+9. **Finalizacja logiki w `useProfileView`:** Uzupełnienie funkcji-handlerów o wywołania API, obsługę `isSubmitting`, odświeżanie danych oraz wyświetlanie powiadomień (Toast).
+10. **Stylowanie i testowanie:** Dopracowanie wyglądu zgodnie z mobile-first i przetestowanie wszystkich ścieżek interakcji użytkownika, włączając w to przypadki brzegowe i obsługę błędów.
