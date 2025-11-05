@@ -14,6 +14,8 @@
 
 - [ ] Przycisk "Zainteresowany" na liście użytkowników,
 - [ ] Przycisk "Dodaj sport",
+- [ ] Lista kontrolna uzupełnienia profilu (przed onboardingiem)
 - [ ] Onboarding nowego użytkownika,
+- [ ] Zapisanie stanu zakładek przy przełączaniu między nimi,
 
 ## Sugestie użytkowników i alfa/beta-testerów
