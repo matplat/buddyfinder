@@ -1,6 +1,7 @@
 import type { Json } from "@/db/database.types";
 import type { UserSportDto, AddUserSportCommand, UpdateUserSportCommand } from "@/types";
 import type { supabaseClient } from "@/db/supabase.client";
+import { createLogger } from "@/lib/logger";
 
 /**
  * Error thrown when attempting to add a sport that doesn't exist
@@ -33,6 +34,8 @@ export class UserSportNotFoundError extends Error {
 }
 
 export class UserSportService {
+  private readonly logger = createLogger("UserSportService");
+
   constructor(private readonly supabase: typeof supabaseClient) {}
 
   /**
@@ -47,7 +50,10 @@ export class UserSportService {
    * @returns Updated UserSportDto
    */
   async updateUserSport(userId: string, sportId: number, command: UpdateUserSportCommand): Promise<UserSportDto> {
+    this.logger.info("Updating user sport", { userId, sportId, updateFields: Object.keys(command) });
+
     if (!userId) {
+      this.logger.error("User ID is required but was not provided");
       throw new Error("User ID is required");
     }
 
@@ -80,12 +86,16 @@ export class UserSportService {
       .single();
 
     if (updateError) {
+      this.logger.error("Failed to update user sport", { userId, sportId, error: updateError });
       throw updateError;
     }
 
     if (!updatedUserSport) {
+      this.logger.warn("User sport not found", { userId, sportId });
       throw new UserSportNotFoundError(sportId);
     }
+
+    this.logger.info("Successfully updated user sport", { userId, sportId });
 
     return {
       sport_id: updatedUserSport.sport_id,
@@ -103,7 +113,10 @@ export class UserSportService {
    * @returns Array of UserSportDto objects
    */
   async getUserSports(userId: string): Promise<UserSportDto[]> {
+    this.logger.info("Fetching user sports", { userId });
+
     if (!userId) {
+      this.logger.error("User ID is required but was not provided");
       throw new Error("User ID is required");
     }
 
@@ -122,12 +135,16 @@ export class UserSportService {
       .eq("user_id", userId);
 
     if (error) {
+      this.logger.error("Failed to fetch user sports", { userId, error });
       throw error;
     }
 
     if (!Array.isArray(data)) {
+      this.logger.error("Invalid response format from database", { userId });
       throw new Error("Invalid response format from database");
     }
+
+    this.logger.info("Successfully fetched user sports", { userId, count: data.length });
 
     // Map database result to DTOs using the predefined UserSportDto type
     return data.map((item) => ({
@@ -147,7 +164,10 @@ export class UserSportService {
    * @throws {PostgrestError} If the database query fails
    */
   async addUserSport(userId: string, command: AddUserSportCommand): Promise<UserSportDto> {
+    this.logger.info("Adding sport to user profile", { userId, sportId: command.sport_id });
+
     if (!userId) {
+      this.logger.error("User ID is required but was not provided");
       throw new Error("User ID is required");
     }
 
@@ -159,6 +179,7 @@ export class UserSportService {
       .single();
 
     if (sportError || !sport) {
+      this.logger.warn("Sport not found", { sportId: command.sport_id });
       throw new SportNotFoundError(command.sport_id);
     }
 
@@ -171,10 +192,12 @@ export class UserSportService {
       .single();
 
     if (existingError && existingError.code !== "PGRST116") {
+      this.logger.error("Failed to check existing sport", { userId, sportId: command.sport_id, error: existingError });
       throw existingError;
     }
 
     if (existingSport) {
+      this.logger.warn("User already has this sport", { userId, sportId: command.sport_id });
       throw new DuplicateSportError(command.sport_id);
     }
 
@@ -200,8 +223,15 @@ export class UserSportService {
       .single();
 
     if (insertError || !newUserSport) {
+      this.logger.error("Failed to add sport to user profile", {
+        userId,
+        sportId: command.sport_id,
+        error: insertError,
+      });
       throw insertError || new Error("Failed to create user sport");
     }
+
+    this.logger.info("Successfully added sport to user profile", { userId, sportId: command.sport_id });
 
     return {
       sport_id: newUserSport.sport_id,
@@ -220,10 +250,14 @@ export class UserSportService {
    * @throws {PostgrestError} If the database operation fails
    */
   async deleteUserSport(userId: string, sportId: number): Promise<void> {
+    this.logger.info("Deleting sport from user profile", { userId, sportId });
+
     if (!userId) {
+      this.logger.error("User ID is required but was not provided");
       throw new Error("User ID is required");
     }
     if (!sportId || isNaN(sportId)) {
+      this.logger.error("Valid sport ID is required but was not provided", { sportId });
       throw new Error("Valid sport ID is required");
     }
 
@@ -235,12 +269,16 @@ export class UserSportService {
 
     // Handle database errors
     if (error) {
+      this.logger.error("Failed to delete sport from user profile", { userId, sportId, error });
       throw error;
     }
 
     // If no rows were deleted, sport was not found for this user
     if (!count || count === 0) {
+      this.logger.warn("User sport not found for deletion", { userId, sportId });
       throw new UserSportNotFoundError(sportId);
     }
+
+    this.logger.info("Successfully deleted sport from user profile", { userId, sportId });
   }
 }

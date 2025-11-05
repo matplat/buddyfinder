@@ -1,23 +1,33 @@
 import type { ProfileDto, UpdateProfileCommand } from "@/types";
 import type { supabaseClient } from "@/db/supabase.client";
+import { createLogger } from "@/lib/logger";
 
 export class ProfileService {
+  private readonly logger = createLogger("ProfileService");
+
   constructor(private readonly supabase: typeof supabaseClient) {}
 
   async getCurrentUserProfile(userId: string): Promise<ProfileDto | null> {
+    this.logger.info("Fetching user profile", { userId });
+
     if (!userId) {
+      this.logger.error("User ID is required but was not provided");
       throw new Error("User ID is required");
     }
 
     const { data, error } = await this.supabase.from("profiles").select("*").eq("id", userId).single();
 
     if (error) {
+      this.logger.error("Failed to fetch user profile", { userId, error });
       throw error;
     }
 
     if (!data) {
+      this.logger.warn("User profile not found", { userId });
       return null;
     }
+
+    this.logger.info("Successfully fetched user profile", { userId });
 
     // Map database type to DTO with proper type safety
     const profile: ProfileDto = {
@@ -39,7 +49,10 @@ export class ProfileService {
    * @throws {PostgrestError} If the database update fails
    */
   async updateUserProfile(userId: string, command: UpdateProfileCommand): Promise<ProfileDto> {
+    this.logger.info("Updating user profile", { userId, updateFields: Object.keys(command) });
+
     if (!userId) {
+      this.logger.error("User ID is required but was not provided");
       throw new Error("User ID is required");
     }
 
@@ -58,12 +71,16 @@ export class ProfileService {
       .single();
 
     if (error) {
+      this.logger.error("Failed to update user profile", { userId, error });
       throw error;
     }
 
     if (!data) {
+      this.logger.error("Profile not found after update", { userId });
       throw new Error("Profile not found");
     }
+
+    this.logger.info("Successfully updated user profile", { userId });
 
     // Map to DTO and return
     return {

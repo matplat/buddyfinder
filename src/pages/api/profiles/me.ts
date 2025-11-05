@@ -2,14 +2,20 @@ import type { APIRoute } from "astro";
 import { ProfileService } from "@/lib/services/profile.service";
 import { validateProfileUpdate } from "@/lib/dto/profile.dto";
 import { createErrorResponse, ApiErrorCode } from "@/lib/api/errors";
+import { createLogger } from "@/lib/logger";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ locals }) => {
+const logger = createLogger("API:profiles/me");
+
+export const GET: APIRoute = async ({ locals, request }) => {
   const { session, supabase } = locals;
+
+  logger.info("GET /api/profiles/me", { method: request.method });
 
   // Validate authentication
   if (!session?.user) {
+    logger.warn("Unauthorized access attempt");
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
   }
 
@@ -19,15 +25,17 @@ export const GET: APIRoute = async ({ locals }) => {
     const profile = await profileService.getCurrentUserProfile(session.user.id);
 
     if (!profile) {
+      logger.warn("Profile not found", { userId: session.user.id });
       return createErrorResponse(ApiErrorCode.NOT_FOUND, "Profile not found", "PROFILE_NOT_FOUND");
     }
 
+    logger.info("Successfully fetched profile", { userId: session.user.id });
     return new Response(JSON.stringify(profile), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch {
-    // We log the error in the middleware, no need to duplicate logging here
+  } catch (error) {
+    logger.error("Error fetching profile", { userId: session.user.id, error });
     return createErrorResponse(
       ApiErrorCode.INTERNAL_ERROR,
       "An unexpected error occurred while fetching your profile",
@@ -43,8 +51,11 @@ export const GET: APIRoute = async ({ locals }) => {
 export const PATCH: APIRoute = async ({ request, locals }) => {
   const { session, supabase } = locals;
 
+  logger.info("PATCH /api/profiles/me", { method: request.method });
+
   // Validate authentication
   if (!session?.user) {
+    logger.warn("Unauthorized access attempt");
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
   }
 
@@ -57,6 +68,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
     const profileService = new ProfileService(supabase);
     const updatedProfile = await profileService.updateUserProfile(session.user.id, validatedData);
 
+    logger.info("Successfully updated profile", { userId: session.user.id });
     return new Response(JSON.stringify(updatedProfile), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -64,6 +76,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
   } catch (error: unknown) {
     // Handle validation errors
     if (error instanceof Error && error.name === "ZodError") {
+      logger.warn("Validation error", { userId: session.user.id, error });
       return createErrorResponse(ApiErrorCode.VALIDATION_ERROR, "Invalid request data", "VALIDATION_ERROR");
     }
 
@@ -71,16 +84,12 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
     if (typeof error === "object" && error !== null && "code" in error) {
       const { code } = error as { code: string };
       if (code === "PGRST301") {
+        logger.warn("Profile not found", { userId: session.user.id });
         return createErrorResponse(ApiErrorCode.NOT_FOUND, "Profile not found", "PROFILE_NOT_FOUND");
       }
     }
 
-    // Log unexpected errors in development only
-    if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
-      console.error("Error updating profile:", error);
-    }
-
+    logger.error("Error updating profile", { userId: session.user.id, error });
     return createErrorResponse(
       ApiErrorCode.INTERNAL_ERROR,
       "An unexpected error occurred while updating your profile",
