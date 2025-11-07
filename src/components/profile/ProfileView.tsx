@@ -28,7 +28,7 @@
 
 import { type FC, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Toaster } from "@/components/ui/sonner";
 import { useProfileView } from '@/components/profile/hooks/useProfileView';
 import { ProfileDataSection } from '@/components/profile/ProfileDataSection';
@@ -144,29 +144,36 @@ export const ProfileView: FC = () => {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <CardContent className="p-6">
-          <Tabs defaultValue="profile-data" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="profile-data">Dane profilu</TabsTrigger>
-              <TabsTrigger value="profile-sports">Sporty</TabsTrigger>
-            </TabsList>
-            <TabsContent value="profile-data" className="mt-6">
-              <ProfileDataSection
-                profile={profile}
-                onUpdateDisplayName={updateDisplayName}
-                onAddSocialLink={handleAddSocialLink}
-                onEditSocialLink={handleEditSocialLink}
-                onDeleteSocialLink={handleDeleteSocialLink}
-              />
-            </TabsContent>
-            <TabsContent value="profile-sports" className="mt-6">
-              <ProfileSportsSection
-                userSports={userSports}
-                onAdd={handleAddSport}
-                onEdit={handleEditSport}
-                onDelete={handleDeleteSport}
-              />
-            </TabsContent>
-          </Tabs>
+          <Accordion type="multiple" defaultValue={["profile-data", "profile-sports"]} className="w-full">
+            <AccordionItem value="profile-data">
+              <AccordionTrigger className="text-lg font-semibold">
+                Dane profilu
+              </AccordionTrigger>
+              <AccordionContent className="pt-6">
+                <ProfileDataSection
+                  profile={profile}
+                  onUpdateDisplayName={updateDisplayName}
+                  onAddSocialLink={handleAddSocialLink}
+                  onEditSocialLink={handleEditSocialLink}
+                  onDeleteSocialLink={handleDeleteSocialLink}
+                />
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="profile-sports">
+              <AccordionTrigger className="text-lg font-semibold">
+                Sporty
+              </AccordionTrigger>
+              <AccordionContent className="pt-6">
+                <ProfileSportsSection
+                  userSports={userSports}
+                  onAdd={handleAddSport}
+                  onEdit={handleEditSport}
+                  onDelete={handleDeleteSport}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </CardContent>
       </Card>
 
