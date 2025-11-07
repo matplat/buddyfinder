@@ -9,12 +9,12 @@ export const prerender = false;
 const logger = createLogger("API:profiles/me");
 
 export const GET: APIRoute = async ({ locals, request }) => {
-  const { session, supabase } = locals;
+  const { supabase, user } = locals;
 
   logger.info("GET /api/profiles/me", { method: request.method });
 
   // Validate authentication
-  if (!session?.user) {
+  if (!user) {
     logger.warn("Unauthorized access attempt");
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
   }
@@ -22,20 +22,20 @@ export const GET: APIRoute = async ({ locals, request }) => {
   const profileService = new ProfileService(supabase);
 
   try {
-    const profile = await profileService.getCurrentUserProfile(session.user.id);
+    const profile = await profileService.getCurrentUserProfile(user.id);
 
     if (!profile) {
-      logger.warn("Profile not found", { userId: session.user.id });
+      logger.warn("Profile not found", { userId: user.id });
       return createErrorResponse(ApiErrorCode.NOT_FOUND, "Profile not found", "PROFILE_NOT_FOUND");
     }
 
-    logger.info("Successfully fetched profile", { userId: session.user.id });
+    logger.info("Successfully fetched profile", { userId: user.id });
     return new Response(JSON.stringify(profile), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    logger.error("Error fetching profile", { userId: session.user.id, error });
+    logger.error("Error fetching profile", { userId: user.id, error });
     return createErrorResponse(
       ApiErrorCode.INTERNAL_ERROR,
       "An unexpected error occurred while fetching your profile",
@@ -49,12 +49,12 @@ export const GET: APIRoute = async ({ locals, request }) => {
  * Updates the current user's profile
  */
 export const PATCH: APIRoute = async ({ request, locals }) => {
-  const { session, supabase } = locals;
+  const { supabase, user } = locals;
 
   logger.info("PATCH /api/profiles/me", { method: request.method });
 
   // Validate authentication
-  if (!session?.user) {
+  if (!user) {
     logger.warn("Unauthorized access attempt");
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
   }
@@ -66,9 +66,9 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 
     // Initialize service and update profile
     const profileService = new ProfileService(supabase);
-    const updatedProfile = await profileService.updateUserProfile(session.user.id, validatedData);
+    const updatedProfile = await profileService.updateUserProfile(user.id, validatedData);
 
-    logger.info("Successfully updated profile", { userId: session.user.id });
+    logger.info("Successfully updated profile", { userId: user.id });
     return new Response(JSON.stringify(updatedProfile), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -76,7 +76,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
   } catch (error: unknown) {
     // Handle validation errors
     if (error instanceof Error && error.name === "ZodError") {
-      logger.warn("Validation error", { userId: session.user.id, error });
+      logger.warn("Validation error", { userId: user.id, error });
       return createErrorResponse(ApiErrorCode.VALIDATION_ERROR, "Invalid request data", "VALIDATION_ERROR");
     }
 
@@ -84,12 +84,12 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
     if (typeof error === "object" && error !== null && "code" in error) {
       const { code } = error as { code: string };
       if (code === "PGRST301") {
-        logger.warn("Profile not found", { userId: session.user.id });
+        logger.warn("Profile not found", { userId: user.id });
         return createErrorResponse(ApiErrorCode.NOT_FOUND, "Profile not found", "PROFILE_NOT_FOUND");
       }
     }
 
-    logger.error("Error updating profile", { userId: session.user.id, error });
+    logger.error("Error updating profile", { userId: user.id, error });
     return createErrorResponse(
       ApiErrorCode.INTERNAL_ERROR,
       "An unexpected error occurred while updating your profile",

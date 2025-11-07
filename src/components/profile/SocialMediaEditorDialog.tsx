@@ -48,17 +48,25 @@ const SOCIAL_PLATFORMS = {
 
 const formSchema = z.object({
   platform: z.enum(["instagram", "facebook", "strava", "garmin"] as const),
-  url: z.string().url("Wprowadź poprawny adres URL"),
+  url: z.string().min(1, "Wprowadź adres URL").transform((val) => {
+    // Dodaj https:// jeśli brakuje protokołu
+    if (!val.startsWith('http://') && !val.startsWith('https://')) {
+      return `https://${val}`;
+    }
+    return val;
+  }).pipe(z.string().url("Wprowadź poprawny adres URL")),
 });
 
 interface SocialMediaEditorDialogProps {
   isOpen: boolean;
+  existingPlatforms?: string[];
   onSave: (platform: string, url: string) => void;
   onClose: () => void;
 }
 
 export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
   isOpen,
+  existingPlatforms = [],
   onSave,
   onClose,
 }) => {
@@ -69,6 +77,10 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
       url: "",
     },
   });
+
+  const availablePlatforms = Object.entries(SOCIAL_PLATFORMS).filter(
+    ([key]) => !existingPlatforms.includes(key)
+  );
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     onSave(values.platform, values.url);
@@ -103,7 +115,7 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.entries(SOCIAL_PLATFORMS).map(([key, { name }]) => (
+                      {availablePlatforms.map(([key, { name }]) => (
                         <SelectItem key={key} value={key}>
                           {name}
                         </SelectItem>

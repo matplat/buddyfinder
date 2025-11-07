@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2 } from "lucide-react";
 import type { UserSportViewModel } from '@/components/shared/types/sport';
+import { getSportParametersConfig, secondsToPace, minutesToTime, timeToMinutes } from '@/lib/sport-parameters-config';
 
 interface SportBadgeProps {
   sport: UserSportViewModel;
@@ -17,6 +18,44 @@ export const SportBadge: FC<SportBadgeProps> = ({
   onDelete,
 }) => {
   const isEditable = Boolean(onEdit && onDelete);
+
+  // Funkcja pomocnicza do formatowania wartości parametru
+  const formatParameterValue = (paramName: string, value: string | number): string => {
+    const paramConfig = getSportParametersConfig(sport.sport_name).find(p => p.name === paramName);
+    if (!paramConfig) return String(value);
+
+    let formattedValue: string;
+    switch (paramConfig.type) {
+      case 'pace':
+        formattedValue = typeof value === 'number' ? secondsToPace(value) : String(value);
+        break;
+      case 'time':
+        if (typeof value === 'number') {
+          formattedValue = minutesToTime(value);
+        } else {
+          // Jeśli wartość jest stringiem, spróbuj skonwertować na minuty i sformatować
+          const minutes = timeToMinutes(value);
+          formattedValue = minutes !== null ? minutesToTime(minutes) : value;
+        }
+        break;
+      case 'number':
+        formattedValue = String(value);
+        break;
+      case 'enum':
+      default:
+        formattedValue = String(value);
+        break;
+    }
+
+    return paramConfig.unit ? `${formattedValue} ${paramConfig.unit}` : formattedValue;
+  };
+
+  // Funkcja pomocnicza do pobierania etykiety parametru
+  const getParameterLabel = (paramName: string): string => {
+    const paramConfig = getSportParametersConfig(sport.sport_name).find(p => p.name === paramName);
+    return paramConfig?.label || paramName;
+  };
+
   return (
     <Card className="relative overflow-hidden">
       <CardContent className="p-4 pr-20">
@@ -51,7 +90,7 @@ export const SportBadge: FC<SportBadgeProps> = ({
             <div className="flex flex-wrap gap-2">
               {Object.entries(sport.params).map(([key, value]) => (
                 <Badge key={key} variant="outline">
-                  {key}: {value}
+                  {getParameterLabel(key)}: {formatParameterValue(key, value)}
                 </Badge>
               ))}
             </div>

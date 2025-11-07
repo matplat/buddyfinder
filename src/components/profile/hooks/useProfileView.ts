@@ -35,6 +35,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import type { ProfileDto, SportDto, UserSportDto, UpdateProfileCommand, AddUserSportCommand, UpdateUserSportCommand } from '@/types';
 import type { SocialLinks } from '../types';
+import type { UserSportViewModel as UserSportVM } from '@/components/shared/types/sport';
 
 /**
  * Model widoku profilu użytkownika.
@@ -71,12 +72,21 @@ const mapProfileDtoToViewModel = (dto: ProfileDto): ProfileViewModel => ({
   social_links: (dto.social_links as SocialLinks) || {},
 });
 
+/**
+ * Mapuje DTO sportu użytkownika na model widoku.
+ */
+const mapUserSportDtoToViewModel = (dto: UserSportDto): UserSportVM => ({
+  sport_id: dto.sport_id,
+  sport_name: dto.name,
+  custom_range_km: dto.custom_range_km,
+  params: dto.parameters as Record<string, string | number>,
+});
+
 export interface ProfileViewModel extends ProfileDto {}
-export interface UserSportViewModel extends UserSportDto {}
 
 export const useProfileView = () => {
   const [profile, setProfile] = useState<ProfileViewModel | null>(null);
-  const [userSports, setUserSports] = useState<UserSportViewModel[]>([]);
+  const [userSports, setUserSports] = useState<UserSportVM[]>([]);
   const [allSports, setAllSports] = useState<SportDto[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -99,7 +109,7 @@ export const useProfileView = () => {
         const userSportsResponse = await fetch('/api/profiles/me/sports');
         if (!userSportsResponse.ok) throw new Error('Failed to fetch user sports');
         const userSportsData: UserSportDto[] = await userSportsResponse.json();
-        setUserSports(userSportsData);
+        setUserSports(userSportsData.map(mapUserSportDtoToViewModel));
       } catch (error) {
         console.error('Error fetching profile data:', error);
         // TODO: Implement proper error handling
@@ -205,10 +215,11 @@ export const useProfileView = () => {
       
       if (!response.ok) throw new Error('Failed to add sport');
       const newSport: UserSportDto = await response.json();
-      setUserSports(prev => [...prev, newSport]);
+      setUserSports(prev => [...prev, mapUserSportDtoToViewModel(newSport)]);
+      toast.success('Sport został dodany do Twojego profilu');
     } catch (error) {
       console.error('Error adding sport:', error);
-      // TODO: Implement proper error handling
+      toast.error('Nie udało się dodać sportu');
     }
   };
 
@@ -223,11 +234,12 @@ export const useProfileView = () => {
       if (!response.ok) throw new Error('Failed to edit sport');
       const updatedSport: UserSportDto = await response.json();
       setUserSports(prev => prev.map(sport => 
-        sport.sport_id === sportId ? updatedSport : sport
+        sport.sport_id === sportId ? mapUserSportDtoToViewModel(updatedSport) : sport
       ));
+      toast.success('Sport został zaktualizowany');
     } catch (error) {
       console.error('Error editing sport:', error);
-      // TODO: Implement proper error handling
+      toast.error('Nie udało się zaktualizować sportu');
     }
   };
 
@@ -239,9 +251,10 @@ export const useProfileView = () => {
       
       if (!response.ok) throw new Error('Failed to delete sport');
       setUserSports(prev => prev.filter(sport => sport.sport_id !== sportId));
+      toast.success('Sport został usunięty z Twojego profilu');
     } catch (error) {
       console.error('Error deleting sport:', error);
-      // TODO: Implement proper error handling
+      toast.error('Nie udało się usunąć sportu');
     }
   };
 

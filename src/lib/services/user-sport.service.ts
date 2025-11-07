@@ -186,7 +186,7 @@ export class UserSportService {
     // Check if user already has this sport
     const { data: existingSport, error: existingError } = await this.supabase
       .from("user_sports")
-      .select("id")
+      .select("sport_id")
       .eq("user_id", userId)
       .eq("sport_id", command.sport_id)
       .single();
@@ -262,7 +262,7 @@ export class UserSportService {
     }
 
     // Delete the sport from user's profile
-    const { error, count } = await this.supabase
+    const { error } = await this.supabase
       .from("user_sports")
       .delete()
       .match({ user_id: userId, sport_id: sportId });
@@ -271,12 +271,6 @@ export class UserSportService {
     if (error) {
       this.logger.error("Failed to delete sport from user profile", { userId, sportId, error });
       throw error;
-    }
-
-    // If no rows were deleted, sport was not found for this user
-    if (!count || count === 0) {
-      this.logger.warn("User sport not found for deletion", { userId, sportId });
-      throw new UserSportNotFoundError(sportId);
     }
 
     this.logger.info("Successfully deleted sport from user profile", { userId, sportId });

@@ -54,7 +54,13 @@ export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({
   onClose,
 }) => {
   const formSchema = z.object({
-    url: z.string().url("Wprowadź poprawny adres URL"),
+    url: z.string().min(1, "Wprowadź adres URL").transform((val) => {
+      // Dodaj https:// jeśli brakuje protokołu
+      if (!val.startsWith('http://') && !val.startsWith('https://')) {
+        return `https://${val}`;
+      }
+      return val;
+    }).pipe(z.string().url("Wprowadź poprawny adres URL")),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

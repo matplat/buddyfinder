@@ -136,6 +136,10 @@ export const ProfileView: FC = () => {
     return <ProfileViewSkeleton />;
   }
 
+  if (!profile) {
+    return null;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card>
@@ -169,6 +173,7 @@ export const ProfileView: FC = () => {
       {/* Dialogs */}
       <SocialMediaEditorDialog
         isOpen={isSocialMediaEditorOpen}
+        existingPlatforms={profile?.social_links ? Object.keys(profile.social_links) : []}
         onSave={handleSocialLinkSave}
         onClose={() => setIsSocialMediaEditorOpen(false)}
       />
@@ -187,6 +192,7 @@ export const ProfileView: FC = () => {
         isOpen={isSportEditorOpen}
         mode={sportDialogMode}
         allSports={allSports}
+        existingSportIds={userSports.map(sport => sport.sport_id)}
         sportToEdit={sportToEdit}
         onSave={async (data) => {
           if (sportDialogMode === 'add') {
