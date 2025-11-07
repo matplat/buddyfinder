@@ -81,10 +81,11 @@ Główny przepływ dla nowego użytkownika wygląda następująco:
 
 ## 4. Układ i struktura nawigacji
 
-- **Nawigacja główna**: Realizowana przez `BottomNavBar` - komponent paska nawigacyjnego na dole ekranu, widoczny we wszystkich głównych widokach po zalogowaniu. Zawiera trzy linki/ikony:
+- **Nawigacja główna**: Urządzenia mobilne: realizowana przez `BottomNavBar` - komponent paska nawigacyjnego na dole ekranu, widoczny we wszystkich głównych widokach po zalogowaniu. Zawiera trzy linki/ikony:
   - **Profil**: Prowadzi do `ProfileView`.
   - **Mapa**: Prowadzi do `MapView`.
   - **Znajomi**: Prowadzi do `MatchesView`.
+  Wersja desktopowa (przeglądarkowa): ekran z widokiem mapy pośrodku, po bokach panele boczne dla profilu i dopasowań, z możliwością rozszerzania lub całkowitego zwijania paneli.
 - **Nawigacja kontekstowa**:
   - **Okna modalne (`Dialog`)**: Używane do izolowania złożonych akcji, takich jak dodawanie/edycja sportu lub linków social media, bez opuszczania bieżącego widoku.
   - **Potwierdzenia (`ConfirmationDialog`)**: Używane przed wykonaniem destrukcyjnych akcji (np. usunięcie sportu), aby zapobiec przypadkowym błędom.
