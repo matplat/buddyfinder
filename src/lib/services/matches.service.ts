@@ -44,8 +44,14 @@ export class MatchesService {
     }
 
     // Type assertion and validation
-    const result = data as GetMatchesResult;
-    if (!result || !Array.isArray(result.matched_users)) {
+    // RPC function returns array with single object containing total_count and matched_users
+    if (!Array.isArray(data) || data.length === 0) {
+      this.logger.error("Invalid response format from matches function", { userId });
+      throw new Error("Invalid response format from matches function");
+    }
+
+    const result = data[0] as GetMatchesResult;
+    if (!result || typeof result.total_count !== 'number' || !Array.isArray(result.matched_users)) {
       this.logger.error("Invalid response format from matches function", { userId });
       throw new Error("Invalid response format from matches function");
     }

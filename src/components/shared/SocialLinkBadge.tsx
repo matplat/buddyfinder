@@ -1,8 +1,8 @@
 import { type FC } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Instagram, Facebook, GripHorizontal, ExternalLink, Pencil, Trash2 } from "lucide-react";
-
+import { Pencil, Trash2 } from "lucide-react";
+import { getPlatformConfig } from "@/lib/config/social-platforms.config";
 
 interface SocialLinkBadgeProps {
   platform: string;
@@ -11,29 +11,6 @@ interface SocialLinkBadgeProps {
   onDelete?: (platform: string) => void;
 }
 
-const PLATFORM_CONFIG = {
-  instagram: {
-    name: "Instagram",
-    icon: Instagram,
-    baseUrl: "https://www.instagram.com",
-  },
-  facebook: {
-    name: "Facebook",
-    icon: Facebook,
-    baseUrl: "https://www.facebook.com",
-  },
-  strava: {
-    name: "Strava",
-    icon: GripHorizontal,
-    baseUrl: "https://www.strava.com",
-  },
-  garmin: {
-    name: "Garmin",
-    icon: ExternalLink,
-    baseUrl: "https://connect.garmin.com",
-  },
-} as const;
-
 export const SocialLinkBadge: FC<SocialLinkBadgeProps> = ({
   platform,
   url,
@@ -41,7 +18,7 @@ export const SocialLinkBadge: FC<SocialLinkBadgeProps> = ({
   onDelete,
 }) => {
   const isEditable = Boolean(onEdit && onDelete);
-  const config = PLATFORM_CONFIG[platform as keyof typeof PLATFORM_CONFIG];
+  const config = getPlatformConfig(platform);
   if (!config) return null;
 
   const { name, icon: Icon } = config;

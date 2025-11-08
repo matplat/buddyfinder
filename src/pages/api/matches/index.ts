@@ -14,7 +14,7 @@ const logger = createLogger("API:matches");
  * Supports pagination via limit and offset query parameters.
  */
 export const GET: APIRoute = async ({ locals, url, request }) => {
-  const { session, supabase } = locals;
+  const { user, supabase } = locals;
 
   logger.info("GET /api/matches", {
     method: request.method,
@@ -22,7 +22,7 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
   });
 
   // Validate authentication
-  if (!session?.user) {
+  if (!user) {
     logger.warn("Unauthorized access attempt");
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
   }
@@ -33,10 +33,10 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
 
     // Initialize service and get matches
     const matchesService = new MatchesService(supabase);
-    const matches = await matchesService.getMatches(session.user.id, queryParams.limit, queryParams.offset);
+    const matches = await matchesService.getMatches(user.id, queryParams.limit, queryParams.offset);
 
     logger.info("Successfully fetched matches", {
-      userId: session.user.id,
+      userId: user.id,
       matchCount: matches.data.length,
       total: matches.pagination.total,
     });
@@ -48,13 +48,13 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
   } catch (error: unknown) {
     // Handle validation errors
     if (error instanceof Error && error.name === "ZodError") {
-      logger.warn("Validation error", { userId: session.user.id, error });
+      logger.warn("Validation error", { userId: user.id, error });
       return createErrorResponse(ApiErrorCode.VALIDATION_ERROR, "Invalid query parameters", error);
     }
 
     // Handle profile completeness errors
     if (error instanceof Error && error.message.includes("Profile is incomplete")) {
-      logger.warn("Profile incomplete", { userId: session.user.id });
+      logger.warn("Profile incomplete", { userId: user.id });
       return createErrorResponse(
         ApiErrorCode.VALIDATION_ERROR,
         "Your profile must have a location and default range set to find matches",
@@ -63,7 +63,7 @@ export const GET: APIRoute = async ({ locals, url, request }) => {
     }
 
     // Handle unexpected errors
-    logger.error("Error getting matches", { userId: session.user.id, error });
+    logger.error("Error getting matches", { userId: user.id, error });
     return createErrorResponse(
       ApiErrorCode.INTERNAL_ERROR,
       "An unexpected error occurred while finding matches",

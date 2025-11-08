@@ -1,6 +1,5 @@
-export interface UserSportViewModel {
+import type { SportBadgeData } from '../SportBadge';
+
+export interface UserSportViewModel extends SportBadgeData {
   sport_id: number;
-  sport_name: string;
-  custom_range_km: number | null;
-  params: Record<string, string | number>;
 }
