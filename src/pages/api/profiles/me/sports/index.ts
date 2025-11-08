@@ -6,13 +6,13 @@ import { AddUserSportCommand } from "@/lib/dto/user-sport.dto";
 export const prerender = false;
 
 export const GET: APIRoute = async ({ locals }) => {
-  // Early return if no session
-  if (!locals.session) {
+  // Early return if no user
+  if (!locals.user) {
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required to access this resource");
   }
 
   try {
-    const userId = locals.session.user.id;
+    const userId = locals.user.id;
     if (!userId) {
       return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "User ID not found in session");
     }
@@ -37,12 +37,12 @@ export const GET: APIRoute = async ({ locals }) => {
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
-  // Early return if no session
-  if (!locals.session) {
+  // Early return if no user
+  if (!locals.user) {
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required to access this resource");
   }
 
-  const userId = locals.session.user.id;
+  const userId = locals.user.id;
   if (!userId) {
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "User ID not found in session");
   }

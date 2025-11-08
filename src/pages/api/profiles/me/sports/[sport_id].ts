@@ -43,10 +43,10 @@ export const PUT: APIRoute = async ({ request, params, locals: { supabase, sessi
 };
 
 export const DELETE: APIRoute = async ({ params, locals }) => {
-  const { session, supabase } = locals;
+  const { user, supabase } = locals;
 
   // Validate authentication
-  if (!session?.user) {
+  if (!user) {
     return createErrorResponse(ApiErrorCode.UNAUTHORIZED, "Authentication required", "UNAUTHORIZED");
   }
 
@@ -58,7 +58,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
 
   try {
     const userSportService = new UserSportService(supabase);
-    await userSportService.deleteUserSport(session.user.id, validationResult.data.sport_id);
+    await userSportService.deleteUserSport(user.id, validationResult.data.sport_id);
 
     // Return 204 No Content for successful deletion
     return new Response(null, { status: 204 });

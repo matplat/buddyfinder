@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { SportDto, AddUserSportCommand, UpdateUserSportCommand } from '@/types';
 import type { UserSportViewModel } from '@/components/shared/types/sport';
-import { getSportParametersConfig, paceToSeconds, secondsToPace, timeToMinutes, minutesToTime, type ParameterConfig } from '@/lib/sport-parameters-config';
+import { getSportParametersConfig, paceToSeconds, secondsToPace, timeToMinutes, minutesToTime, type ParameterConfig } from '@/lib/config/sport-parameters.config';
 
 interface SportEditorDialogProps {
   isOpen: boolean;
