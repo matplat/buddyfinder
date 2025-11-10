@@ -1,21 +1,21 @@
 /**
  * Główny komponent widoku profilu użytkownika.
- * 
+ *
  * Odpowiada za:
  * - Wyświetlanie i zarządzanie danymi profilu użytkownika
  * - Zarządzanie listą sportów użytkownika
  * - Obsługę wszystkich dialogów do edycji danych
  * - Wyświetlanie powiadomień o sukcesie/błędach
- * 
+ *
  * Wykorzystuje wzorzec presentational component + custom hook (useProfileView)
  * dla oddzielenia logiki biznesowej od warstwy prezentacji.
- * 
+ *
  * @example
  * ```tsx
  * // W komponencie strony profilu:
  * import { Layout } from '@/layouts/Layout';
  * import { ProfileView } from '@/components/profile/ProfileView';
- * 
+ *
  * const ProfilePage = () => {
  *   return (
  *     <Layout>
@@ -26,21 +26,21 @@
  * ```
  */
 
-import { type FC, useState } from 'react';
+import { type FC, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Toaster } from "@/components/ui/sonner";
-import { useProfileView } from '@/components/profile/hooks/useProfileView';
-import { ProfileDataSection } from '@/components/profile/ProfileDataSection';
-import { ProfileSportsSection } from '@/components/profile/ProfileSportsSection';
-import { SocialMediaEditorDialog } from '@/components/profile/SocialMediaEditorDialog';
-import { SocialLinkEditorDialog } from '@/components/profile/SocialLinkEditorDialog';
-import { SportEditorDialog } from '@/components/profile/SportEditorDialog';
-import { ConfirmationDialog } from '@/components/shared/ConfirmationDialog';
-import { ProfileViewSkeleton } from '@/components/profile/ProfileViewSkeleton';
-import type { AddUserSportCommand, UpdateUserSportCommand } from '@/lib/dto/user-sport.dto';
-import type { UserSportViewModel } from '@/components/shared/types/sport';
-import type { ProfileDataUpdates } from '@/components/main/types';
+import { useProfileView } from "@/components/profile/hooks/useProfileView";
+import { ProfileDataSection } from "@/components/profile/ProfileDataSection";
+import { ProfileSportsSection } from "@/components/profile/ProfileSportsSection";
+import { SocialMediaEditorDialog } from "@/components/profile/SocialMediaEditorDialog";
+import { SocialLinkEditorDialog } from "@/components/profile/SocialLinkEditorDialog";
+import { SportEditorDialog } from "@/components/profile/SportEditorDialog";
+import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
+import { ProfileViewSkeleton } from "@/components/profile/ProfileViewSkeleton";
+import type { AddUserSportCommand, UpdateUserSportCommand } from "@/lib/dto/user-sport.dto";
+import type { UserSportViewModel } from "@/components/shared/types/sport";
+import type { ProfileDataUpdates } from "@/components/main/types";
 
 export interface ProfileViewProps {
   /** Callback when profile data changes (location, range, sports) */
@@ -64,10 +64,10 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
 
   // Social media dialogs state
   const [isSocialMediaEditorOpen, setIsSocialMediaEditorOpen] = useState(false);
-  const [socialLinkToEdit, setSocialLinkToEdit] = useState<{ platform: string; url: string; } | null>(null);
-  
+  const [socialLinkToEdit, setSocialLinkToEdit] = useState<{ platform: string; url: string } | null>(null);
+
   // Sport dialogs state
-  const [sportDialogMode, setSportDialogMode] = useState<'add' | 'edit'>('add');
+  const [sportDialogMode, setSportDialogMode] = useState<"add" | "edit">("add");
   const [isSportEditorOpen, setIsSportEditorOpen] = useState(false);
   const [sportToEdit, setSportToEdit] = useState<UserSportViewModel | undefined>();
 
@@ -79,8 +79,8 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
     onConfirm: () => void;
   }>({
     isOpen: false,
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     onConfirm: () => {},
   });
 
@@ -109,19 +109,19 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
       description: "Czy na pewno chcesz usunąć ten link do mediów społecznościowych?",
       onConfirm: async () => {
         await deleteSocialLink(platform);
-        setConfirmationDialog(prev => ({ ...prev, isOpen: false }));
+        setConfirmationDialog((prev) => ({ ...prev, isOpen: false }));
       },
     });
   };
 
   const handleAddSport = () => {
-    setSportDialogMode('add');
+    setSportDialogMode("add");
     setSportToEdit(undefined);
     setIsSportEditorOpen(true);
   };
 
   const handleEditSport = (sport: UserSportViewModel) => {
-    setSportDialogMode('edit');
+    setSportDialogMode("edit");
     setSportToEdit(sport);
     setIsSportEditorOpen(true);
   };
@@ -133,7 +133,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
       description: `Czy na pewno chcesz usunąć ${sport.sport_name} ze swojego profilu?`,
       onConfirm: async () => {
         await deleteSport(sport.sport_id);
-        setConfirmationDialog(prev => ({ ...prev, isOpen: false }));
+        setConfirmationDialog((prev) => ({ ...prev, isOpen: false }));
       },
     });
   };
@@ -152,9 +152,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
         <CardContent className="p-6">
           <Accordion type="multiple" defaultValue={["profile-data", "profile-sports"]} className="w-full">
             <AccordionItem value="profile-data">
-              <AccordionTrigger className="text-lg font-semibold">
-                Dane profilu
-              </AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold">Dane profilu</AccordionTrigger>
               <AccordionContent className="pt-6">
                 <ProfileDataSection
                   profile={profile}
@@ -167,9 +165,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
             </AccordionItem>
 
             <AccordionItem value="profile-sports">
-              <AccordionTrigger className="text-lg font-semibold">
-                Sporty
-              </AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold">Sporty</AccordionTrigger>
               <AccordionContent className="pt-6">
                 <ProfileSportsSection
                   userSports={userSports}
@@ -205,10 +201,10 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
         isOpen={isSportEditorOpen}
         mode={sportDialogMode}
         allSports={allSports}
-        existingSportIds={userSports.map(sport => sport.sport_id)}
+        existingSportIds={userSports.map((sport) => sport.sport_id)}
         sportToEdit={sportToEdit}
         onSave={async (data) => {
-          if (sportDialogMode === 'add') {
+          if (sportDialogMode === "add") {
             await addSport(data as AddUserSportCommand);
           } else if (sportToEdit) {
             await editSport(sportToEdit.sport_id, data as UpdateUserSportCommand);
@@ -223,10 +219,9 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
         title={confirmationDialog.title}
         description={confirmationDialog.description}
         onConfirm={confirmationDialog.onConfirm}
-        onClose={() => setConfirmationDialog(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setConfirmationDialog((prev) => ({ ...prev, isOpen: false }))}
       />
       <Toaster />
     </div>
   );
 };
-

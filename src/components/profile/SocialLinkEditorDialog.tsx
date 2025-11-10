@@ -1,21 +1,9 @@
-import { type FC } from 'react';
+import { type FC } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -46,21 +34,19 @@ interface SocialLinkEditorDialogProps {
   onClose: () => void;
 }
 
-export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({
-  isOpen,
-  platform,
-  url,
-  onSave,
-  onClose,
-}) => {
+export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({ isOpen, platform, url, onSave, onClose }) => {
   const formSchema = z.object({
-    url: z.string().min(1, "Wprowadź adres URL").transform((val) => {
-      // Dodaj https:// jeśli brakuje protokołu
-      if (!val.startsWith('http://') && !val.startsWith('https://')) {
-        return `https://${val}`;
-      }
-      return val;
-    }).pipe(z.string().url("Wprowadź poprawny adres URL")),
+    url: z
+      .string()
+      .min(1, "Wprowadź adres URL")
+      .transform((val) => {
+        // Dodaj https:// jeśli brakuje protokołu
+        if (!val.startsWith("http://") && !val.startsWith("https://")) {
+          return `https://${val}`;
+        }
+        return val;
+      })
+      .pipe(z.string().url("Wprowadź poprawny adres URL")),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,9 +68,7 @@ export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
-            Edytuj link do {platformConfig?.name || platform}
-          </DialogTitle>
+          <DialogTitle>Edytuj link do {platformConfig?.name || platform}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

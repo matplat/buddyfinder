@@ -22,7 +22,7 @@ export function useMapView() {
         setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
         const response = await fetch("/api/profiles/me");
-        
+
         if (!response.ok) {
           if (response.status === 401) {
             throw new Error("Sesja wygasła. Proszę zalogować się ponownie.");
@@ -55,8 +55,7 @@ export function useMapView() {
   const isDirty = useMemo(() => {
     if (!state.profile) return false;
 
-    const locationChanged =
-      JSON.stringify(state.draftLocation) !== JSON.stringify(state.profile.location);
+    const locationChanged = JSON.stringify(state.draftLocation) !== JSON.stringify(state.profile.location);
     const rangeChanged = state.draftRangeKm !== state.profile.default_range_km;
 
     return locationChanged || rangeChanged;

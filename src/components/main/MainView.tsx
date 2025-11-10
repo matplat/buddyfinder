@@ -95,10 +95,7 @@ export const MainView: FC = () => {
       />
 
       {/* Bottom Navigation for mobile (z-50) */}
-      <BottomNavigation
-        activePanel={state.activeMobilePanel}
-        onNavigate={toggleMobilePanel}
-      />
+      <BottomNavigation activePanel={state.activeMobilePanel} onNavigate={toggleMobilePanel} />
 
       {/* Toast notifications */}
       <Toaster />

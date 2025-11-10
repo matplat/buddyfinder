@@ -74,7 +74,7 @@ export function MapView({ onLocationUpdate }: MapViewProps) {
         setSavedLocation(draftLocation);
       }
       setIsPopoverOpen(false);
-      
+
       // Notify parent component about location update
       if (onLocationUpdate && draftLocation) {
         onLocationUpdate({
@@ -89,14 +89,11 @@ export function MapView({ onLocationUpdate }: MapViewProps) {
   }, [saveChanges, draftLocation, onLocationUpdate, draftRangeKm]);
 
   // Handle address selection from search
-  const handleAddressSelect = useCallback(
-    (location: GeoJsonPoint, address: string) => {
-      // Only fly to location, don't change marker position
-      setFlyToLocation(location);
-      toast.success(`Znaleziono: ${address}`);
-    },
-    []
-  );
+  const handleAddressSelect = useCallback((location: GeoJsonPoint, address: string) => {
+    // Only fly to location, don't change marker position
+    setFlyToLocation(location);
+    toast.success(`Znaleziono: ${address}`);
+  }, []);
 
   // Reset fly flag after animation completes
   const handleFlyComplete = useCallback(() => {
@@ -155,7 +152,7 @@ export function MapView({ onLocationUpdate }: MapViewProps) {
         flyToLocation={flyToLocation}
         onFlyComplete={handleFlyComplete}
       />
-      
+
       <RangeInputPopover
         isOpen={isPopoverOpen}
         rangeKm={draftRangeKm}

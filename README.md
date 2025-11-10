@@ -89,12 +89,45 @@ BuddyFinder is a web application designed to connect amateur athletes and sports
 
 ## Available Scripts
 
+### Development
+
 - `npm run dev`: Starts the development server.
 - `npm run build`: Builds the application for production.
 - `npm run preview`: Previews the production build locally.
+
+### Code Quality
+
 - `npm run lint`: Lints the codebase for errors.
 - `npm run lint:fix`: Lints the codebase and automatically fixes issues.
 - `npm run format`: Formats the code using Prettier.
+
+### Testing
+
+- `npm run test:unit`: Runs all unit tests once.
+- `npm run test:unit:watch`: Runs unit tests in watch mode (auto-rerun on file changes).
+- `npm run test:unit:ui`: Opens Vitest UI for interactive test exploration.
+- `npm run test:coverage`: Generates code coverage report.
+
+#### Running Specific Tests
+
+```bash
+# Run tests for a specific file
+npm run test:unit -- src/lib/services/__tests__/user-sport.service.test.ts
+
+# Run tests matching a pattern
+npm run test:unit -- -t "should add user sport"
+```
+
+#### Test Coverage
+
+Current test coverage: **~98%**
+
+The project includes comprehensive unit tests for:
+- **DTOs & Validation** (`src/lib/dto/__tests__/`): Zod schema validation for user inputs
+- **Services** (`src/lib/services/__tests__/`): Business logic for user sports and matching
+- **Configuration** (`src/lib/config/__tests__/`): Sport parameters and utilities
+
+See `/docs/test-plan.md` for detailed testing strategy and coverage requirements.
 
 ## Project Scope
 

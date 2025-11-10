@@ -4,11 +4,7 @@
  */
 
 import { type FC } from "react";
-import {
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
+import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { MapPin, Mail } from "lucide-react";
 import type { UserMatchViewModel } from "./types";
 import { getPlatformConfig } from "@/lib/config/social-platforms.config";
@@ -37,10 +33,7 @@ export const UserMatchCard: FC<UserMatchCardProps> = ({ match }) => {
           {/* Email */}
           <div className="flex items-center gap-2 text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" />
-            <a
-              href={`mailto:${match.email}`}
-              className="text-primary hover:underline"
-            >
+            <a href={`mailto:${match.email}`} className="text-primary hover:underline">
               {match.email}
             </a>
           </div>

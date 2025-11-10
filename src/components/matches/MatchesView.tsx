@@ -34,7 +34,7 @@ export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
         description="Aby zobaczyć dopasowania, musisz najpierw uzupełnić swoją lokalizację w profilu."
         cta={{
           text: "Uzupełnij profil",
-          onClick: () => window.location.href = "/profile",
+          onClick: () => (window.location.href = "/profile"),
         }}
       />
     );
@@ -60,7 +60,7 @@ export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
         description="Nie znaleźliśmy nikogo w Twoim zasięgu. Spróbuj zwiększyć zasięg w swoim profilu lub dodać więcej sportów."
         cta={{
           text: "Edytuj profil",
-          onClick: () => window.location.href = "/profile",
+          onClick: () => (window.location.href = "/profile"),
         }}
       />
     );
@@ -86,11 +86,7 @@ export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
 
       {hasNextPage && (
         <div className="flex justify-center pt-4">
-          <Button
-            onClick={loadMore}
-            variant="outline"
-            disabled={isLoading}
-          >
+          <Button onClick={loadMore} variant="outline" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

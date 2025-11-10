@@ -11,7 +11,7 @@ const user = Astro.locals.user;
 
 // If no user (shouldn't happen due to middleware), redirect to login
 if (!user) {
-  return Astro.redirect('/login');
+  return Astro.redirect("/login");
 }
 ---
 

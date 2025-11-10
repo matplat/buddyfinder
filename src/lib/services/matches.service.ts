@@ -51,7 +51,7 @@ export class MatchesService {
     }
 
     const result = data[0] as GetMatchesResult;
-    if (!result || typeof result.total_count !== 'number' || !Array.isArray(result.matched_users)) {
+    if (!result || typeof result.total_count !== "number" || !Array.isArray(result.matched_users)) {
       this.logger.error("Invalid response format from matches function", { userId });
       throw new Error("Invalid response format from matches function");
     }

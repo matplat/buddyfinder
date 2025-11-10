@@ -262,10 +262,7 @@ export class UserSportService {
     }
 
     // Delete the sport from user's profile
-    const { error } = await this.supabase
-      .from("user_sports")
-      .delete()
-      .match({ user_id: userId, sport_id: sportId });
+    const { error } = await this.supabase.from("user_sports").delete().match({ user_id: userId, sport_id: sportId });
 
     // Handle database errors
     if (error) {

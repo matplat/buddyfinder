@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,13 +18,7 @@ interface ConfirmationDialogProps {
   onClose: () => void;
 }
 
-export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
-  isOpen,
-  title,
-  description,
-  onConfirm,
-  onClose,
-}) => {
+export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ isOpen, title, description, onConfirm, onClose }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>

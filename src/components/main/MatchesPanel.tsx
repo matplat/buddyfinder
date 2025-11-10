@@ -39,11 +39,7 @@ export const MatchesPanel: FC<MatchesPanelProps> = ({
   if (isMobile) {
     return (
       <Sheet open={panelState.isOpen} onOpenChange={onMobileOpenChange}>
-        <SheetContent
-          side="bottom"
-          className="h-[85vh] overflow-y-auto"
-          aria-label="Panel dopasowań"
-        >
+        <SheetContent side="bottom" className="h-[85vh] overflow-y-auto" aria-label="Panel dopasowań">
           <MatchesView refreshTrigger={refreshTrigger} />
         </SheetContent>
       </Sheet>
@@ -72,9 +68,9 @@ export const MatchesPanel: FC<MatchesPanelProps> = ({
           >
             <ChevronLeft className="h-6 w-6" aria-hidden="true" />
           </Button>
-          <span 
+          <span
             className="text-sm font-medium text-muted-foreground whitespace-nowrap"
-            style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
           >
             DOPASOWANIA
           </span>

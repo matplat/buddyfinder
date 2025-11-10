@@ -1,29 +1,10 @@
-import { type FC } from 'react';
+import { type FC } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -48,13 +29,17 @@ const SOCIAL_PLATFORMS = {
 
 const formSchema = z.object({
   platform: z.enum(["instagram", "facebook", "strava", "garmin"] as const),
-  url: z.string().min(1, "Wprowadź adres URL").transform((val) => {
-    // Dodaj https:// jeśli brakuje protokołu
-    if (!val.startsWith('http://') && !val.startsWith('https://')) {
-      return `https://${val}`;
-    }
-    return val;
-  }).pipe(z.string().url("Wprowadź poprawny adres URL")),
+  url: z
+    .string()
+    .min(1, "Wprowadź adres URL")
+    .transform((val) => {
+      // Dodaj https:// jeśli brakuje protokołu
+      if (!val.startsWith("http://") && !val.startsWith("https://")) {
+        return `https://${val}`;
+      }
+      return val;
+    })
+    .pipe(z.string().url("Wprowadź poprawny adres URL")),
 });
 
 interface SocialMediaEditorDialogProps {
@@ -78,9 +63,7 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
     },
   });
 
-  const availablePlatforms = Object.entries(SOCIAL_PLATFORMS).filter(
-    ([key]) => !existingPlatforms.includes(key)
-  );
+  const availablePlatforms = Object.entries(SOCIAL_PLATFORMS).filter(([key]) => !existingPlatforms.includes(key));
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     onSave(values.platform, values.url);
@@ -93,9 +76,7 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Dodaj link do mediów społecznościowych</DialogTitle>
-          <DialogDescription>
-            Wybierz platformę i podaj link do swojego profilu.
-          </DialogDescription>
+          <DialogDescription>Wybierz platformę i podaj link do swojego profilu.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -105,10 +86,7 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Platforma</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Wybierz platformę" />

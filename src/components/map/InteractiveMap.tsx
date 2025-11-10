@@ -47,10 +47,10 @@ const DEFAULT_ZOOM = 7;
 /**
  * Component that handles map click events
  */
-function MapClickHandler({ 
-  onLocationChange 
-}: { 
-  onLocationChange: (location: GeoJsonPoint, screenX: number, screenY: number) => void 
+function MapClickHandler({
+  onLocationChange,
+}: {
+  onLocationChange: (location: GeoJsonPoint, screenX: number, screenY: number) => void;
 }) {
   useMapEvents({
     click: (e) => {
@@ -70,13 +70,7 @@ function MapClickHandler({
 /**
  * Component that handles flying to a location
  */
-function FlyToLocation({ 
-  location, 
-  onComplete 
-}: { 
-  location: LatLngExpression | null;
-  onComplete?: () => void;
-}) {
+function FlyToLocation({ location, onComplete }: { location: LatLngExpression | null; onComplete?: () => void }) {
   const map = useMap();
 
   useEffect(() => {
@@ -99,10 +93,10 @@ function FlyToLocation({
  * Interactive map component using react-leaflet with OpenStreetMap tiles.
  * Displays a marker at the user's location and a semi-transparent circle representing the search range.
  */
-export function InteractiveMap({ 
-  location, 
-  rangeKm, 
-  onLocationChange, 
+export function InteractiveMap({
+  location,
+  rangeKm,
+  onLocationChange,
   isPopoverOpen,
   flyToLocation = null,
   onFlyComplete,
@@ -121,12 +115,7 @@ export function InteractiveMap({
   const mapCenter: LatLngExpression = markerPosition || DEFAULT_CENTER;
 
   return (
-    <MapContainer
-      center={mapCenter}
-      zoom={DEFAULT_ZOOM}
-      style={{ height: "100%", width: "100%" }}
-      className="z-0"
-    >
+    <MapContainer center={mapCenter} zoom={DEFAULT_ZOOM} style={{ height: "100%", width: "100%" }} className="z-0">
       {/* OpenStreetMap tile layer */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -137,10 +126,7 @@ export function InteractiveMap({
       <MapClickHandler onLocationChange={onLocationChange} />
 
       {/* Fly to location when address is selected */}
-      <FlyToLocation 
-        location={flyToPosition} 
-        onComplete={onFlyComplete}
-      />
+      <FlyToLocation location={flyToPosition} onComplete={onFlyComplete} />
 
       {/* Marker and circle - only show if location is set */}
       {markerPosition && (

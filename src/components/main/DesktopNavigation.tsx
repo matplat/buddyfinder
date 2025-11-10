@@ -9,19 +9,19 @@ import { Button } from "@/components/ui/button";
 export const DesktopNavigation: FC = () => {
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
       });
 
       if (response.ok) {
-        window.location.href = '/login';
+        window.location.href = "/login";
       } else {
-        console.error('Logout failed');
-        alert('Wystąpił błąd podczas wylogowywania');
+        console.error("Logout failed");
+        alert("Wystąpił błąd podczas wylogowywania");
       }
     } catch (error) {
-      console.error('Logout error:', error);
-      alert('Wystąpił błąd podczas wylogowywania');
+      console.error("Logout error:", error);
+      alert("Wystąpił błąd podczas wylogowywania");
     }
   };
 
@@ -31,7 +31,7 @@ export const DesktopNavigation: FC = () => {
         <a href="/" className="text-xl font-bold hover:text-primary">
           BuddyFinder
         </a>
-        
+
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"

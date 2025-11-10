@@ -71,15 +71,17 @@ export function useMatchesView(props?: UseMatchesViewProps): UseMatchesViewRetur
         display_name: match.display_name || match.username || "Unnamed User",
         email: match.email,
         distance_km: match.distance_km,
-        social_links: (match.social_links && typeof match.social_links === 'object' && !Array.isArray(match.social_links)) 
-          ? match.social_links as Record<string, string>
-          : {},
+        social_links:
+          match.social_links && typeof match.social_links === "object" && !Array.isArray(match.social_links)
+            ? (match.social_links as Record<string, string>)
+            : {},
         sports: match.sports.map((sport) => ({
           sport_id: sport.sport_id,
           name: sport.name,
-          parameters: (sport.parameters && typeof sport.parameters === 'object' && !Array.isArray(sport.parameters))
-            ? sport.parameters as Record<string, any>
-            : {},
+          parameters:
+            sport.parameters && typeof sport.parameters === "object" && !Array.isArray(sport.parameters)
+              ? (sport.parameters as Record<string, any>)
+              : {},
         })),
       }));
 
@@ -125,9 +127,7 @@ export function useMatchesView(props?: UseMatchesViewProps): UseMatchesViewRetur
   /**
    * Check if there are more pages to load
    */
-  const hasNextPage = pagination
-    ? pagination.offset + pagination.limit < pagination.total
-    : false;
+  const hasNextPage = pagination ? pagination.offset + pagination.limit < pagination.total : false;
 
   return {
     matches,

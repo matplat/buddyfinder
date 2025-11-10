@@ -32,7 +32,7 @@ export function AddressSearch({ onLocationSelect }: AddressSearchProps) {
   // - Clear results on empty = no unnecessary requests
   useEffect(() => {
     const trimmedQuery = query.trim();
-    
+
     // Clear results if query is empty or too short
     if (trimmedQuery.length < 3) {
       setResults([]);
@@ -49,7 +49,7 @@ export function AddressSearch({ onLocationSelect }: AddressSearchProps) {
 
   const searchAddress = useCallback(async () => {
     const trimmedQuery = query.trim();
-    
+
     // Don't search if query is too short
     if (trimmedQuery.length < 3) {
       return;
@@ -82,7 +82,7 @@ export function AddressSearch({ onLocationSelect }: AddressSearchProps) {
       }
 
       const data: NominatimResult[] = await response.json();
-      
+
       // Cache the results
       setSearchCache((prev) => {
         const newCache = new Map(prev);
@@ -96,7 +96,7 @@ export function AddressSearch({ onLocationSelect }: AddressSearchProps) {
         }
         return newCache;
       });
-      
+
       setResults(data);
       setShowResults(true);
     } catch (error) {

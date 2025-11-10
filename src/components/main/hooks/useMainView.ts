@@ -28,7 +28,7 @@ export function useMainView() {
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < MOBILE_BREAKPOINT : false
   );
-  
+
   // Initialize state based on viewport
   const [state, setState] = useState<MainViewState>(() => {
     const initialIsMobile = typeof window !== "undefined" ? window.innerWidth < MOBILE_BREAKPOINT : false;
@@ -50,10 +50,10 @@ export function useMainView() {
     const handleResize = () => {
       const wasMobile = isMobile;
       const nowMobile = window.innerWidth < MOBILE_BREAKPOINT;
-      
+
       if (wasMobile !== nowMobile) {
         setIsMobile(nowMobile);
-        
+
         // When switching from mobile to desktop, close all sheets
         // and set panels to collapsed state
         if (!nowMobile) {

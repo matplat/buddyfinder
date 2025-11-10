@@ -18,12 +18,7 @@ interface MatchesEmptyStateProps {
   variant?: "no-location" | "no-matches" | "error";
 }
 
-export const MatchesEmptyState: FC<MatchesEmptyStateProps> = ({
-  title,
-  description,
-  cta,
-  variant = "no-matches",
-}) => {
+export const MatchesEmptyState: FC<MatchesEmptyStateProps> = ({ title, description, cta, variant = "no-matches" }) => {
   const getIcon = () => {
     switch (variant) {
       case "no-location":
@@ -40,9 +35,7 @@ export const MatchesEmptyState: FC<MatchesEmptyStateProps> = ({
     <div className="flex items-center justify-center min-h-[400px]">
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
-          <div className="flex justify-center">
-            {getIcon()}
-          </div>
+          <div className="flex justify-center">{getIcon()}</div>
           <CardTitle>{title}</CardTitle>
           <CardDescription className="text-base">{description}</CardDescription>
         </CardHeader>
@@ -54,4 +47,4 @@ export const MatchesEmptyState: FC<MatchesEmptyStateProps> = ({
       </Card>
     </div>
   );
-}
+};

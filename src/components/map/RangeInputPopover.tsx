@@ -57,9 +57,7 @@ export function RangeInputPopover({
     <Card className="w-80 shadow-lg" style={style}>
       <CardHeader>
         <CardTitle>Zasięg poszukiwań</CardTitle>
-        <CardDescription>
-          Określ promień, w jakim chcesz szukać partnerów treningowych.
-        </CardDescription>
+        <CardDescription>Określ promień, w jakim chcesz szukać partnerów treningowych.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -73,24 +71,14 @@ export function RangeInputPopover({
             onChange={handleInputChange}
             className="w-full"
           />
-          <p className="text-xs text-muted-foreground">
-            Wartość od 1 do 100 km
-          </p>
+          <p className="text-xs text-muted-foreground">Wartość od 1 do 100 km</p>
         </div>
 
         <div className="flex gap-2">
-          <Button
-            onClick={onSave}
-            disabled={!isDirty}
-            className="flex-1"
-          >
+          <Button onClick={onSave} disabled={!isDirty} className="flex-1">
             Zapisz
           </Button>
-          <Button
-            onClick={onClose}
-            variant="outline"
-            className="flex-1"
-          >
+          <Button onClick={onClose} variant="outline" className="flex-1">
             Anuluj
           </Button>
         </div>
