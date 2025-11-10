@@ -2,7 +2,7 @@
 
 ## Wstępne pomysły
 
-- [ ] Linki do innych social mediów i platform w profilu,
+- [x] Linki do innych social mediów i platform w profilu,
 - [ ] Filtrowanie na liście użytkowników,
 - [ ] Dodatkowe zakładki na liście użytkowników:
   - [ ] wysłane zaproszenia (kliknięcia "Zainteresowany"),
@@ -16,6 +16,6 @@
 - [ ] Przycisk "Dodaj sport",
 - [ ] Lista kontrolna uzupełnienia profilu (przed onboardingiem)
 - [ ] Onboarding nowego użytkownika,
-- [ ] Zapisanie stanu zakładek przy przełączaniu między nimi,
+- [ ] Dodanie kontroli logowania przez nazwę użytkownika (username),
 
 ## Sugestie użytkowników i alfa/beta-testerów
