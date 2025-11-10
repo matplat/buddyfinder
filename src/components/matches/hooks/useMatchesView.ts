@@ -20,10 +20,16 @@ interface UseMatchesViewReturn {
   loadMore: () => Promise<void>;
 }
 
+export interface UseMatchesViewProps {
+  /** Trigger counter for forcing refresh of matches */
+  refreshTrigger?: number;
+}
+
 /**
  * Hook for managing matches view state and data fetching
  */
-export function useMatchesView(): UseMatchesViewReturn {
+export function useMatchesView(props?: UseMatchesViewProps): UseMatchesViewReturn {
+  const { refreshTrigger } = props || {};
   const [matches, setMatches] = useState<UserMatchViewModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<MatchesError>(null);
@@ -98,11 +104,11 @@ export function useMatchesView(): UseMatchesViewReturn {
   }, []);
 
   /**
-   * Load initial matches on mount
+   * Load initial matches on mount and when refreshTrigger changes
    */
   useEffect(() => {
     fetchMatches(0, false);
-  }, [fetchMatches]);
+  }, [fetchMatches, refreshTrigger]);
 
   /**
    * Load more matches (pagination)

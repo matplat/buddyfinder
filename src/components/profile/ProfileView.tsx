@@ -40,8 +40,14 @@ import { ConfirmationDialog } from '@/components/shared/ConfirmationDialog';
 import { ProfileViewSkeleton } from '@/components/profile/ProfileViewSkeleton';
 import type { AddUserSportCommand, UpdateUserSportCommand } from '@/lib/dto/user-sport.dto';
 import type { UserSportViewModel } from '@/components/shared/types/sport';
+import type { ProfileDataUpdates } from '@/components/main/types';
 
-export const ProfileView: FC = () => {
+export interface ProfileViewProps {
+  /** Callback when profile data changes (location, range, sports) */
+  onDataChange?: (updates: ProfileDataUpdates) => void;
+}
+
+export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
   const {
     profile,
     userSports,
@@ -54,7 +60,7 @@ export const ProfileView: FC = () => {
     addSport,
     editSport,
     deleteSport,
-  } = useProfileView();
+  } = useProfileView({ onDataChange });
 
   // Social media dialogs state
   const [isSocialMediaEditorOpen, setIsSocialMediaEditorOpen] = useState(false);

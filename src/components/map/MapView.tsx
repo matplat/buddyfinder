@@ -5,13 +5,19 @@ import { InteractiveMap } from "./InteractiveMap";
 import { RangeInputPopover } from "./RangeInputPopover";
 import { AddressSearch } from "./AddressSearch";
 import type { GeoJsonPoint } from "@/types";
+import type { LocationUpdate } from "@/components/main/types";
 import { Button } from "@/components/ui/button";
+
+export interface MapViewProps {
+  /** Callback when location or range is updated */
+  onLocationUpdate?: (update: LocationUpdate) => void;
+}
 
 /**
  * Main map view component that orchestrates the interactive map and range input.
  * Manages user location and search range settings.
  */
-export function MapView() {
+export function MapView({ onLocationUpdate }: MapViewProps) {
   const {
     profile,
     draftLocation,
@@ -68,11 +74,19 @@ export function MapView() {
         setSavedLocation(draftLocation);
       }
       setIsPopoverOpen(false);
+      
+      // Notify parent component about location update
+      if (onLocationUpdate && draftLocation) {
+        onLocationUpdate({
+          location: draftLocation,
+          rangeKm: draftRangeKm,
+        });
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Wystąpił nieoczekiwany błąd.";
       toast.error(message, { id: "save-location" });
     }
-  }, [saveChanges, draftLocation]);
+  }, [saveChanges, draftLocation, onLocationUpdate, draftRangeKm]);
 
   // Handle address selection from search
   const handleAddressSelect = useCallback(

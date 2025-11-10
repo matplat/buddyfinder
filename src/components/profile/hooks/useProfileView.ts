@@ -36,6 +36,7 @@ import { toast } from 'sonner';
 import type { ProfileDto, SportDto, UserSportDto, UpdateProfileCommand, AddUserSportCommand, UpdateUserSportCommand } from '@/types';
 import type { SocialLinks } from '../types';
 import type { UserSportViewModel as UserSportVM } from '@/components/shared/types/sport';
+import type { ProfileDataUpdates } from '@/components/main/types';
 
 /**
  * Model widoku profilu użytkownika.
@@ -84,7 +85,13 @@ const mapUserSportDtoToViewModel = (dto: UserSportDto): UserSportVM => ({
 
 export interface ProfileViewModel extends ProfileDto {}
 
-export const useProfileView = () => {
+export interface UseProfileViewProps {
+  /** Callback when profile data changes that affects matches */
+  onDataChange?: (updates: ProfileDataUpdates) => void;
+}
+
+export const useProfileView = (props?: UseProfileViewProps) => {
+  const { onDataChange } = props || {};
   const [profile, setProfile] = useState<ProfileViewModel | null>(null);
   const [userSports, setUserSports] = useState<UserSportVM[]>([]);
   const [allSports, setAllSports] = useState<SportDto[]>([]);
@@ -217,6 +224,9 @@ export const useProfileView = () => {
       const newSport: UserSportDto = await response.json();
       setUserSports(prev => [...prev, mapUserSportDtoToViewModel(newSport)]);
       toast.success('Sport został dodany do Twojego profilu');
+      
+      // Notify parent about sports change
+      onDataChange?.({ sportsChanged: true });
     } catch (error) {
       console.error('Error adding sport:', error);
       toast.error('Nie udało się dodać sportu');
@@ -237,6 +247,9 @@ export const useProfileView = () => {
         sport.sport_id === sportId ? mapUserSportDtoToViewModel(updatedSport) : sport
       ));
       toast.success('Sport został zaktualizowany');
+      
+      // Notify parent about sports change
+      onDataChange?.({ sportsChanged: true });
     } catch (error) {
       console.error('Error editing sport:', error);
       toast.error('Nie udało się zaktualizować sportu');
@@ -252,6 +265,9 @@ export const useProfileView = () => {
       if (!response.ok) throw new Error('Failed to delete sport');
       setUserSports(prev => prev.filter(sport => sport.sport_id !== sportId));
       toast.success('Sport został usunięty z Twojego profilu');
+      
+      // Notify parent about sports change
+      onDataChange?.({ sportsChanged: true });
     } catch (error) {
       console.error('Error deleting sport:', error);
       toast.error('Nie udało się usunąć sportu');

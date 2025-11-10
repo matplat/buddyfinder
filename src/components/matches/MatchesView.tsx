@@ -12,8 +12,13 @@ import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-export const MatchesView: FC = () => {
-  const { matches, isLoading, error, pagination, hasNextPage, loadMore } = useMatchesView();
+export interface MatchesViewProps {
+  /** Trigger counter for forcing refresh of matches */
+  refreshTrigger?: number;
+}
+
+export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
+  const { matches, isLoading, error, pagination, hasNextPage, loadMore } = useMatchesView({ refreshTrigger });
 
   // Loading state
   if (isLoading) {

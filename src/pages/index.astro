@@ -1,8 +1,32 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+/**
+ * Main application page - BuddyFinder
+ * Integrates MapView, ProfileView, and MatchesView in a responsive layout
+ */
+import "../styles/global.css";
+import { MainView } from "@/components/main/MainView";
+
+// Check authentication - user is set by middleware
+const user = Astro.locals.user;
+
+// If no user (shouldn't happen due to middleware), redirect to login
+if (!user) {
+  return Astro.redirect('/login');
+}
 ---
 
-<Layout>
-  <Welcome />
-</Layout>
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>BuddyFinder - Znajdź partnera treningowego</title>
+    <meta name="description" content="Znajdź lokalnych partnerów treningowych do swoich ulubionych sportów" />
+  </head>
+  <body class="overflow-hidden">
+    <!-- MainView is a fullscreen React component that manages the entire UI -->
+    <MainView client:only="react" />
+  </body>
+</html>
