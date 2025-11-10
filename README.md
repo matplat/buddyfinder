@@ -41,6 +41,13 @@ BuddyFinder is a web application designed to connect amateur athletes and sports
 - **OpenStreetMaps (OSM)**: Provides free and open map data.
 - **Leaflet.js**: A lightweight JavaScript library for interactive maps.
 
+### Testing
+
+- **Vitest**: Framework for unit and integration tests.
+- **React Testing Library**: Library for testing React components.
+- **Playwright**: Framework for end-to-end (E2E) testing.
+- **Mock Service Worker**: API mocking for integration tests.
+
 ## Getting Started Locally
 
 ### Prerequisites
