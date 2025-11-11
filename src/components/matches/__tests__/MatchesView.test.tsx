@@ -17,12 +17,13 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MatchesView } from "../MatchesView";
-import type { UseMatchesViewReturn } from "../hooks/useMatchesView";
-import { mockMatchedUserClose, mockMatchedUserMedium } from "@test/unit/fixtures/matches";
+import type { useMatchesView } from "../hooks/useMatchesView";
+import { mockMatchedUserClose, mockMatchedUserMedium } from "test/unit/fixtures/matches";
 import type { UserMatchViewModel } from "../types";
 
 // Mock the useMatchesView hook
-const mockUseMatchesView = vi.fn<[props?: { refreshTrigger?: number }], UseMatchesViewReturn>();
+type UseMatchesViewReturn = ReturnType<typeof useMatchesView>;
+const mockUseMatchesView = vi.fn<(props?: { refreshTrigger?: number }) => UseMatchesViewReturn>();
 
 vi.mock("../hooks/useMatchesView", () => ({
   useMatchesView: (props?: { refreshTrigger?: number }) => mockUseMatchesView(props),
@@ -191,6 +192,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
@@ -203,6 +205,7 @@ describe("MatchesView", () => {
         },
         {
           user_id: mockMatchedUserMedium.id,
+          email: mockMatchedUserMedium.email!,
           username: mockMatchedUserMedium.username!,
           display_name: mockMatchedUserMedium.display_name!,
           distance_km: mockMatchedUserMedium.distance_km,
@@ -239,6 +242,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
@@ -268,6 +272,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
@@ -301,6 +306,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
@@ -330,6 +336,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
@@ -361,6 +368,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
@@ -394,6 +402,7 @@ describe("MatchesView", () => {
       const mockMatches: UserMatchViewModel[] = [
         {
           user_id: mockMatchedUserClose.id,
+          email: mockMatchedUserClose.email!,
           username: mockMatchedUserClose.username!,
           display_name: mockMatchedUserClose.display_name!,
           distance_km: mockMatchedUserClose.distance_km,
