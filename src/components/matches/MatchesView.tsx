@@ -34,7 +34,7 @@ export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
         description="Aby zobaczyć dopasowania, musisz najpierw uzupełnić swoją lokalizację w profilu."
         cta={{
           text: "Uzupełnij profil",
-          onClick: () => (window.location.href = "/profile"),
+          href: "/profile",
         }}
       />
     );
@@ -60,7 +60,7 @@ export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
         description="Nie znaleźliśmy nikogo w Twoim zasięgu. Spróbuj zwiększyć zasięg w swoim profilu lub dodać więcej sportów."
         cta={{
           text: "Edytuj profil",
-          onClick: () => (window.location.href = "/profile"),
+          href: "/profile",
         }}
       />
     );
@@ -68,36 +68,38 @@ export const MatchesView: FC<MatchesViewProps> = ({ refreshTrigger }) => {
 
   // Display matches
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">Twoje dopasowania</h2>
-        {pagination && (
-          <p className="text-sm text-muted-foreground">
-            Znaleziono {pagination.total} {pagination.total === 1 ? "osobę" : "osób"}
-          </p>
+    <section aria-label="Dopasowania">
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Twoje dopasowania</h2>
+          {pagination && (
+            <p className="text-sm text-muted-foreground">
+              Znaleziono {pagination.total} {pagination.total === 1 ? "osobę" : "osób"}
+            </p>
+          )}
+        </div>
+
+        <Accordion type="single" collapsible className="space-y-2">
+          {matches.map((match) => (
+            <UserMatchCard key={match.user_id} match={match} />
+          ))}
+        </Accordion>
+
+        {hasNextPage && (
+          <div className="flex justify-center pt-4">
+            <Button onClick={loadMore} variant="outline" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Ładowanie...
+                </>
+              ) : (
+                "Załaduj więcej"
+              )}
+            </Button>
+          </div>
         )}
       </div>
-
-      <Accordion type="single" collapsible className="space-y-2">
-        {matches.map((match) => (
-          <UserMatchCard key={match.user_id} match={match} />
-        ))}
-      </Accordion>
-
-      {hasNextPage && (
-        <div className="flex justify-center pt-4">
-          <Button onClick={loadMore} variant="outline" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Ładowanie...
-              </>
-            ) : (
-              "Załaduj więcej"
-            )}
-          </Button>
-        </div>
-      )}
-    </div>
+    </section>
   );
 };

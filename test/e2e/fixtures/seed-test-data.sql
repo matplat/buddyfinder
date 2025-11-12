@@ -1,32 +1,21 @@
--- Seed test data for E2E tests
--- This script creates 6 test users with various profile configurations
--- WARNING: This is for TEST environment only!
+-- Seed danych testowych dla US-004 (zarządzanie sportami w profilu)
+-- Główny użytkownik: testuser1@buddyfinder.test
+-- Zakładamy, że tabela "sports" została już zasilona przez migracje projektu.
 
--- Test User 1: Main test user
--- Email: testuser1@buddyfinder.test
--- Password: TestPass123!
--- Location: Warszawa centrum (52.2297, 21.0122)
--- Default range: 10 km
--- Sports: Bieganie
+-- Usunięcie istniejących rekordów użytkownika testowego
+DELETE FROM public.user_sports
+WHERE user_id = (SELECT id FROM auth.users WHERE email = 'testuser1@buddyfinder.test');
 
--- Note: User creation happens via Supabase Auth API in DatabaseHelper
--- This script only contains additional setup if needed
-
--- Verify sports exist
-SELECT id, name FROM sports ORDER BY id;
-
--- Expected sports:
--- 1: Bieganie
--- 2: Rower szosowy  
--- 3: Rower MTB
--- 4: Pływanie w basenie
--- 5: Pływanie na wodach otwartych
--- 6: Rolki
--- 7: Nurkowanie
--- 8: Tenis
-
--- Test data is created programmatically via DatabaseHelper.seedAllTestUsers()
--- See: test/e2e/helpers/database.helper.ts
-
--- To seed test users, run the E2E test setup or use:
--- npm run test:e2e -- --grep "@setup"
+-- Dodanie przykładowego sportu (Bieganie) wraz z parametrami
+INSERT INTO public.user_sports (user_id, sport_id, custom_range_km, parameters)
+SELECT
+  auth_user.id,
+  sport.id,
+  10,
+  jsonb_build_object(
+    'dystans', 10,
+    'tempo', 330 -- 5:30 min/km w sekundach
+  )
+FROM auth.users AS auth_user
+JOIN public.sports AS sport ON sport.name = 'bieganie'
+WHERE auth_user.email = 'testuser1@buddyfinder.test';

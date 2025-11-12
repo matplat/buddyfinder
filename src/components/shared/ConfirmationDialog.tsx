@@ -21,14 +21,18 @@ interface ConfirmationDialogProps {
 export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ isOpen, title, description, onConfirm, onClose }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent>
+      <AlertDialogContent data-testid="confirmation-dialog--content">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Anuluj</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Potwierdź</AlertDialogAction>
+          <AlertDialogCancel onClick={onClose} data-testid="confirmation-dialog--cancel-button">
+            Anuluj
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} data-testid="confirmation-dialog--confirm-button">
+            Potwierdź
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

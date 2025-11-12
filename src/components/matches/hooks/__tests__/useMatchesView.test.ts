@@ -14,7 +14,7 @@
 
 import { renderHook, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { mockFetch, createMockResponse, createMockErrorResponse } from "@test/unit/mocks/fetch";
+import { mockFetch, createMockResponse, createMockErrorResponse } from "test/unit/mocks/fetch";
 import { useMatchesView } from "../useMatchesView";
 import {
   mockGetMatchesResponse,
@@ -22,7 +22,7 @@ import {
   mockMatchedUserClose,
   mockMatchedUserMedium,
   mockMatchedUserFar,
-} from "@test/unit/fixtures/matches";
+} from "test/unit/fixtures/matches";
 import type { GetMatchesResponseDto } from "@/types";
 
 describe("useMatchesView", () => {

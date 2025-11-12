@@ -164,9 +164,14 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="profile-sports">
-              <AccordionTrigger className="text-lg font-semibold">Sporty</AccordionTrigger>
-              <AccordionContent className="pt-6">
+            <AccordionItem value="profile-sports" data-testid="profile-view--sports-accordion">
+              <AccordionTrigger
+                className="text-lg font-semibold"
+                data-testid="profile-view--sports-accordion-toggle"
+              >
+                Sporty
+              </AccordionTrigger>
+              <AccordionContent className="pt-6" data-testid="profile-view--sports-section">
                 <ProfileSportsSection
                   userSports={userSports}
                   onAdd={handleAddSport}

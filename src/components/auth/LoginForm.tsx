@@ -90,6 +90,7 @@ export const LoginForm: FC = () => {
                 autoComplete="username"
                 aria-invalid={!!errors.login}
                 aria-describedby={errors.login ? "login-error" : undefined}
+                data-testid="login-form--login-input"
                 {...register("login")}
               />
               {errors.login && (
@@ -115,6 +116,7 @@ export const LoginForm: FC = () => {
                 autoComplete="current-password"
                 aria-invalid={!!errors.password}
                 aria-describedby={errors.password ? "password-error" : undefined}
+                data-testid="login-form--password-input"
                 {...register("password")}
               />
               {errors.password && (
@@ -126,7 +128,7 @@ export const LoginForm: FC = () => {
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={isSubmitting} data-testid="login-button">
               {isSubmitting ? "Logowanie..." : "Zaloguj się"}
             </Button>
 

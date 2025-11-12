@@ -16,19 +16,23 @@ export const ProfileSportsSection: FC<ProfileSportsSectionProps> = ({ userSports
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Twoje sporty</h3>
-        <Button onClick={onAdd} className="inline-flex items-center gap-2">
+        <Button
+          onClick={onAdd}
+          className="inline-flex items-center gap-2"
+          data-testid="profile-sports--add-button"
+        >
           <PlusCircle className="h-4 w-4" />
           Dodaj sport
         </Button>
       </div>
 
       {userSports.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-8 text-center">
+        <div className="rounded-lg border border-dashed p-8 text-center" data-testid="profile-sports--empty-state">
           <h4 className="text-sm font-medium text-muted-foreground">Nie masz jeszcze żadnych sportów</h4>
           <p className="mt-1 text-sm text-muted-foreground">Kliknij "Dodaj sport" aby rozpocząć.</p>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4" data-testid="profile-sports--list">
           {userSports.map((sport) => (
             <SportBadge
               key={sport.sport_id}

@@ -13,7 +13,7 @@ interface MatchesEmptyStateProps {
   description: string;
   cta?: {
     text: string;
-    onClick: () => void;
+    href: string;
   };
   variant?: "no-location" | "no-matches" | "error";
 }
@@ -41,7 +41,9 @@ export const MatchesEmptyState: FC<MatchesEmptyStateProps> = ({ title, descripti
         </CardHeader>
         {cta && (
           <CardContent className="flex justify-center pb-6">
-            <Button onClick={cta.onClick}>{cta.text}</Button>
+            <Button asChild>
+              <a href={cta.href}>{cta.text}</a>
+            </Button>
           </CardContent>
         )}
       </Card>

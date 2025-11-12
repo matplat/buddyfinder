@@ -73,7 +73,7 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" data-testid="social-media-editor--dialog">
         <DialogHeader>
           <DialogTitle>Dodaj link do mediów społecznościowych</DialogTitle>
           <DialogDescription>Wybierz platformę i podaj link do swojego profilu.</DialogDescription>
@@ -88,7 +88,7 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
                   <FormLabel>Platforma</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger data-testid="social-media-editor--platform-select">
                         <SelectValue placeholder="Wybierz platformę" />
                       </SelectTrigger>
                     </FormControl>
@@ -111,17 +111,24 @@ export const SocialMediaEditorDialog: FC<SocialMediaEditorDialogProps> = ({
                 <FormItem>
                   <FormLabel>Link do profilu</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="https://" />
+                    <Input {...field} placeholder="https://" data-testid="social-media-editor--url-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={onClose}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={onClose}
+                data-testid="social-media-editor--cancel-button"
+              >
                 Anuluj
               </Button>
-              <Button type="submit">Zapisz</Button>
+              <Button type="submit" data-testid="social-media-editor--save-button">
+                Zapisz
+              </Button>
             </div>
           </form>
         </Form>

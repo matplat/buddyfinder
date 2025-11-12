@@ -243,7 +243,7 @@ export const useProfileView = (props?: UseProfileViewProps) => {
   const editSport = async (sportId: number, data: UpdateUserSportCommand) => {
     try {
       const response = await fetch(`/api/profiles/me/sports/${sportId}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });

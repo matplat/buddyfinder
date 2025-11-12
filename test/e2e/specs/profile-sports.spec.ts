@@ -1,190 +1,182 @@
-import { test, expect } from "../fixtures/auth.fixture";
-import { login } from "../helpers/auth.helper";
-import { TEST_USER_1 } from "../fixtures/test-users.fixture";
+import { expect } from "@playwright/test";
 
-/**
- * E2E Tests for US-004: Wybór uprawianych sportów
- * Tests cover adding, editing, and deleting sports from user profile
- */
+import { DatabaseHelper } from "../helpers/database.helper";
+import { ProfileHelper } from "../helpers/profile.helper";
+import { test } from "../fixtures/auth.fixture";
 
-test.describe("US-004: Profile Sports Management", () => {
-  test.beforeEach(async ({ page }) => {
-    // Login as Test User 1
-    await login(page, TEST_USER_1);
+const TEST_USER_EMAIL = "testuser1@buddyfinder.test";
 
-    // Navigate to profile page
-    await page.goto("/");
-    await page.getByRole("tab", { name: /profil|profile/i }).click();
-  });
+test.describe("US-004: Zarządzanie sportami w profilu", () => {
+  test("TC-E2E-004-001 dodaje nowy sport do profilu", async ({ authenticatedPage }) => {
+    const db = new DatabaseHelper();
+    const profile = new ProfileHelper(authenticatedPage);
 
-  test("TC-E2E-004-001: Add new sport to profile", async ({ page }) => {
-    // Click "Add Sport" button
-    await page.getByRole("button", { name: /dodaj sport|add sport/i }).click();
+    await db.clearUserSports(TEST_USER_EMAIL);
 
-    // Wait for dialog to open
-    await expect(page.getByRole("dialog").getByRole("heading", { name: /dodaj sport|add sport/i })).toBeVisible();
+    try {
+      await profile.navigateToSportsSection();
 
-    // Select sport from dropdown
-    await page.getByLabel(/wybierz sport|select sport/i).click();
-    await page.getByRole("option", { name: /rower mtb|mtb/i }).click();
+      await profile.openAddSportDialog();
 
-    // Fill in parameters
-    // Note: Parameter names depend on sport configuration
-    await page.getByLabel(/dystans|distance/i).fill("30");
-    await page.getByLabel(/średnia prędkość|average speed/i).fill("25");
+      await profile.fillSportForm("rower mtb", {
+        dystans: "30",
+        czas: "1:20h",
+        przewyższenie: "600",
+      });
 
-    // Optional: Set custom range
-    await page.getByLabel(/zasięg|range/i).fill("15");
+      await profile.setCustomRange("15");
 
-    // Save
-    await page.getByRole("button", { name: /zapisz|save/i }).click();
+      await profile.saveSport();
 
-    // Verify dialog closes
-    await expect(page.getByRole("dialog")).not.toBeVisible();
+      await profile.assertSportCardContains("rower mtb", [
+        "rower mtb",
+        "Dystans: 30 km",
+        "Czas: 1:20h",
+        "Przewyższenie: 600 m",
+        "Zasięg: 15 km",
+      ]);
 
-    // Verify sport appears in the list
-    await expect(page.getByText(/rower mtb/i)).toBeVisible();
+      const userId = await ensureTestUser(db);
+      const sportId = await db.ensureSportExists("rower mtb");
+      const { data: row } = await db.client
+        .from("user_sports")
+        .select("custom_range_km, parameters")
+        .eq("user_id", userId)
+        .eq("sport_id", sportId)
+        .maybeSingle();
 
-    // Verify parameters are displayed
-    await expect(page.getByText(/30.*km/i)).toBeVisible();
-    await expect(page.getByText(/25.*km\/h/i)).toBeVisible();
-
-    // Verify success toast
-    await expect(page.getByRole("status")).toContainText(/dodano|added|success/i);
-  });
-
-  test("TC-E2E-004-002: Edit existing sport", async ({ page }) => {
-    // Find the "Bieganie" sport card (already exists for Test User 1)
-    const sportCard = page.locator('[data-testid="sport-card"]').filter({ hasText: /bieganie/i });
-
-    // Click edit button
-    await sportCard.getByRole("button", { name: /edytuj|edit/i }).click();
-
-    // Wait for dialog
-    await expect(page.getByRole("dialog")).toBeVisible();
-
-    // Verify form is pre-filled with current values
-    await expect(page.getByLabel(/dystans|distance/i)).toHaveValue("10");
-    await expect(page.getByLabel(/tempo|pace/i)).toHaveValue("5:30");
-
-    // Update values
-    await page.getByLabel(/tempo|pace/i).fill("5:00");
-    await page.getByLabel(/dystans|distance/i).fill("15");
-
-    // Save changes
-    await page.getByRole("button", { name: /zapisz|save/i }).click();
-
-    // Verify dialog closes
-    await expect(page.getByRole("dialog")).not.toBeVisible();
-
-    // Verify updated values are displayed
-    await expect(page.getByText(/15.*km/i)).toBeVisible();
-    await expect(page.getByText(/5:00.*min\/km/i)).toBeVisible();
-
-    // Verify success toast
-    await expect(page.getByRole("status")).toContainText(/zaktualizowano|updated|success/i);
-  });
-
-  test("TC-E2E-004-003: Delete sport from profile", async ({ page }) => {
-    // Find a sport card to delete
-    const sportCard = page.locator('[data-testid="sport-card"]').filter({ hasText: /bieganie/i });
-
-    // Click delete button
-    await sportCard.getByRole("button", { name: /usuń|delete|remove/i }).click();
-
-    // Wait for confirmation dialog
-    await expect(page.getByRole("alertdialog")).toBeVisible();
-    await expect(page.getByText(/czy na pewno|are you sure/i)).toBeVisible();
-
-    // Confirm deletion
-    await page.getByRole("button", { name: /potwierdź|confirm|yes/i }).click();
-
-    // Verify confirmation dialog closes
-    await expect(page.getByRole("alertdialog")).not.toBeVisible();
-
-    // Verify sport is removed from the list
-    await expect(sportCard).not.toBeVisible();
-
-    // Verify success toast
-    await expect(page.getByRole("status")).toContainText(/usunięto|deleted|removed/i);
-  });
-
-  test("TC-E2E-004-004: Add multiple sports", async ({ page }) => {
-    const sportsToAdd = [
-      { name: "Rower MTB", distance: "40", speed: "20" },
-      { name: "Pływanie w basenie", distance: "2" },
-      { name: "Tenis", level: "intermediate" },
-    ];
-
-    for (const sport of sportsToAdd) {
-      // Click add button
-      await page.getByRole("button", { name: /dodaj sport|add sport/i }).click();
-
-      // Select sport
-      await page.getByLabel(/wybierz sport|select sport/i).click();
-      await page.getByRole("option", { name: new RegExp(sport.name, "i") }).click();
-
-      // Fill in parameters based on sport type
-      if ("distance" in sport) {
-        await page.getByLabel(/dystans|distance/i).fill(sport.distance);
-      }
-      if ("speed" in sport) {
-        await page.getByLabel(/prędkość|speed/i).fill(sport.speed);
-      }
-      if ("level" in sport) {
-        await page.getByLabel(/poziom|level|skill/i).click();
-        await page.getByRole("option", { name: new RegExp(sport.level, "i") }).click();
-      }
-
-      // Save
-      await page.getByRole("button", { name: /zapisz|save/i }).click();
-
-      // Wait for dialog to close
-      await expect(page.getByRole("dialog")).not.toBeVisible();
-
-      // Verify sport appears
-      await expect(page.getByText(new RegExp(sport.name, "i"))).toBeVisible();
-    }
-
-    // Verify all sports are displayed
-    for (const sport of sportsToAdd) {
-      await expect(page.getByText(new RegExp(sport.name, "i"))).toBeVisible();
+      expect(row?.custom_range_km).toBe(15);
+      const params = (row?.parameters ?? {}) as Record<string, unknown>;
+      expect(params).toMatchObject({ dystans: 30, czas: 80, przewyższenie: 600 });
+    } finally {
+      await db.clearUserSports(TEST_USER_EMAIL);
     }
   });
 
-  test("TC-E2E-004-005: Validation - cannot save sport without required parameters", async ({ page }) => {
-    // Click add button
-    await page.getByRole("button", { name: /dodaj sport|add sport/i }).click();
+  test("TC-E2E-004-002 edytuje istniejący sport", async ({ authenticatedPage }) => {
+    const db = new DatabaseHelper();
+    const profile = new ProfileHelper(authenticatedPage);
 
-    // Select sport
-    await page.getByLabel(/wybierz sport|select sport/i).click();
-    await page.getByRole("option", { name: /bieganie/i }).click();
+    await db.clearUserSports(TEST_USER_EMAIL);
+    await db.seedTestUserWithSports([
+      {
+        userEmail: TEST_USER_EMAIL,
+        sportName: "bieganie",
+        customRangeKm: 10,
+        parameters: {
+          dystans: 10,
+          tempo: 330,
+        },
+      },
+    ]);
 
-    // Try to save without filling parameters
-    await page.getByRole("button", { name: /zapisz|save/i }).click();
+    try {
+      await profile.navigateToSportsSection();
 
-    // Verify validation errors are shown
-    await expect(page.getByText(/pole wymagane|required field|required/i)).toBeVisible();
+      await profile.openEditSportDialog("bieganie");
 
-    // Verify dialog remains open
-    await expect(page.getByRole("dialog")).toBeVisible();
+      await profile.updateSportParameters({
+        dystans: "15",
+        tempo: "5:00",
+      });
 
-    // Fill in one parameter
-    await page.getByLabel(/dystans|distance/i).fill("10");
+      await profile.setCustomRange("12");
+      await profile.saveSport();
 
-    // Try to save again (still missing pace)
-    await page.getByRole("button", { name: /zapisz|save/i }).click();
+      await profile.assertSportCardContains("bieganie", [
+        "Dystans: 15 km",
+        "Tempo: 5:00 min/km",
+        "Zasięg: 12 km",
+      ]);
 
-    // Verify validation error for pace
-    await expect(page.getByText(/pole wymagane|required field|required/i)).toBeVisible();
+      const userId = await ensureTestUser(db);
+      const sportId = await db.ensureSportExists("bieganie");
+      const { data: row } = await db.client
+        .from("user_sports")
+        .select("custom_range_km, parameters")
+        .eq("user_id", userId)
+        .eq("sport_id", sportId)
+        .maybeSingle();
 
-    // Fill in all required parameters
-    await page.getByLabel(/tempo|pace/i).fill("5:30");
+      expect(row?.custom_range_km).toBe(12);
+      const params = (row?.parameters ?? {}) as Record<string, unknown>;
+      expect(params).toMatchObject({ dystans: 15, tempo: 300 });
+    } finally {
+      await db.clearUserSports(TEST_USER_EMAIL);
+    }
+  });
 
-    // Now save should work
-    await page.getByRole("button", { name: /zapisz|save/i }).click();
+  test("TC-E2E-004-003 usuwa sport z profilu", async ({ authenticatedPage }) => {
+    const db = new DatabaseHelper();
+    const profile = new ProfileHelper(authenticatedPage);
 
-    // Verify dialog closes
-    await expect(page.getByRole("dialog")).not.toBeVisible();
+    await db.clearUserSports(TEST_USER_EMAIL);
+    await db.seedTestUserWithSports([
+      {
+        userEmail: TEST_USER_EMAIL,
+        sportName: "rower szosowy",
+        customRangeKm: 20,
+        parameters: {
+          dystans: 50,
+          prędkość: 32,
+        },
+      },
+    ]);
+
+    try {
+      await profile.navigateToSportsSection();
+
+      await profile.assertSportCardContains("rower szosowy", ["rower szosowy", "Dystans: 50 km"]);
+
+      await profile.deleteSport("rower szosowy");
+
+      await expect(profile.getSportCard("rower szosowy")).toHaveCount(0);
+
+      const userId = await ensureTestUser(db);
+      const sportId = await db.ensureSportExists("rower szosowy");
+      const { data: row } = await db.client
+        .from("user_sports")
+        .select("sport_id")
+        .eq("user_id", userId)
+        .eq("sport_id", sportId)
+        .maybeSingle();
+
+      expect(row).toBeNull();
+    } finally {
+      await db.clearUserSports(TEST_USER_EMAIL);
+    }
+  });
+
+  test("TC-E2E-004-005 waliduje obowiązkowe pole wyboru sportu", async ({ authenticatedPage }) => {
+    const db = new DatabaseHelper();
+    const profile = new ProfileHelper(authenticatedPage);
+
+    await db.clearUserSports(TEST_USER_EMAIL);
+
+    try {
+      await profile.navigateToSportsSection();
+      await profile.openAddSportDialog();
+
+      await profile.submitSportFormExpectingValidationError();
+
+      await expect(authenticatedPage.getByText("Wybierz sport z listy")).toBeVisible();
+      await expect(authenticatedPage.getByTestId("sport-editor--dialog")).toBeVisible();
+
+      await authenticatedPage.getByTestId("sport-editor--cancel-button").click();
+      await authenticatedPage.getByTestId("sport-editor--dialog").waitFor({ state: "hidden" });
+    } finally {
+      await db.clearUserSports(TEST_USER_EMAIL);
+    }
   });
 });
+
+/**
+ * Pomocnicza funkcja do pobrania identyfikatora użytkownika testowego.
+ */
+async function ensureTestUser(db: DatabaseHelper): Promise<string> {
+  const userId = await db.getUserId(TEST_USER_EMAIL);
+  if (!userId) {
+    throw new Error(`Test user ${TEST_USER_EMAIL} not found. Ensure seed auth user exists.`);
+  }
+  return userId;
+}

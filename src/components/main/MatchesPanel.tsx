@@ -56,18 +56,9 @@ export const MatchesPanel: FC<MatchesPanelProps> = ({
       aria-label="Panel dopasowań"
       aria-expanded={!panelState.isCollapsed}
     >
-      {/* Collapsed state: narrow bar with chevron and vertical text */}
+      {/* Collapsed state: narrow bar with vertical text only */}
       {panelState.isCollapsed && (
         <div className="h-full bg-background border-l border-border flex flex-col items-center justify-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onDesktopToggle}
-            aria-label="Rozwiń panel dopasowań"
-            className="hover:bg-accent"
-          >
-            <ChevronLeft className="h-6 w-6" aria-hidden="true" />
-          </Button>
           <span
             className="text-sm font-medium text-muted-foreground whitespace-nowrap"
             style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
@@ -77,9 +68,9 @@ export const MatchesPanel: FC<MatchesPanelProps> = ({
         </div>
       )}
 
-      {/* Expanded state: full panel with content and chevron to collapse */}
+      {/* Expanded state: full panel with content */}
       {!panelState.isCollapsed && (
-        <div className="h-full bg-background border-l border-border flex flex-col relative">
+        <div className="h-full bg-background border-l border-border flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h2 className="text-lg font-semibold">Dopasowania</h2>
@@ -89,19 +80,23 @@ export const MatchesPanel: FC<MatchesPanelProps> = ({
           <div className="flex-1 overflow-y-auto p-4">
             <MatchesView refreshTrigger={refreshTrigger} />
           </div>
-
-          {/* Chevron button - centered on left edge like a notebook tab */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onDesktopToggle}
-            aria-label="Zwiń panel dopasowań"
-            className="absolute top-1/2 -translate-y-1/2 -left-4 h-16 w-8 rounded-r-lg rounded-l-none bg-background border border-l-0 border-border hover:bg-accent shadow-md"
-          >
-            <ChevronRight className="h-5 w-5" aria-hidden="true" />
-          </Button>
         </div>
       )}
+
+      {/* Chevron button - always visible as overlay tab on left edge */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onDesktopToggle}
+        aria-label={panelState.isCollapsed ? "Rozwiń panel dopasowań" : "Zwiń panel dopasowań"}
+        className="absolute top-1/2 -translate-y-1/2 -left-4 h-16 w-8 rounded-r-lg rounded-l-none bg-background border border-l-0 border-border hover:bg-accent shadow-md rotate-180"
+      >
+        {panelState.isCollapsed ? (
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+        ) : (
+          <ChevronRight className="h-5 w-5" aria-hidden="true" />
+        )}
+      </Button>
     </aside>
   );
 };

@@ -29,8 +29,13 @@ interface SportEditorDialogProps {
 }
 
 const formSchema = z.object({
-  sport_id: z.number().int().positive(),
-  custom_range_km: z.number().min(1).max(100).optional(),
+  sport_id: z.number({
+    required_error: "Wybierz sport z listy",
+    invalid_type_error: "Nieprawidłowy sport"
+  }).int("Sport musi być liczbą całkowitą").positive("Wybierz sport z listy"),
+  custom_range_km: z.number({
+    invalid_type_error: "Zasięg musi być liczbą"
+  }).min(1, "Zasięg musi być większy niż 0").max(100, "Zasięg nie może przekraczać 100 km").optional(),
   parameters: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
 });
 
@@ -74,6 +79,23 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
       form.setValue("parameters", {});
     }
   }, [selectedSportId, mode, selectedSport, form]);
+
+  // Reset form when dialog opens with sportToEdit data
+  useEffect(() => {
+    if (isOpen && mode === "edit" && sportToEdit) {
+      form.reset({
+        sport_id: sportToEdit.sport_id,
+        custom_range_km: sportToEdit.custom_range_km ?? undefined,
+        parameters: sportToEdit.params as Record<string, string | number>,
+      });
+    } else if (isOpen && mode === "add") {
+      form.reset({
+        sport_id: undefined,
+        custom_range_km: undefined,
+        parameters: {},
+      });
+    }
+  }, [isOpen, mode, sportToEdit, form]);
 
   /**
    * Konwertuje wartość z formatu wyświetlanego do formatu zapisywanego
@@ -128,12 +150,12 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" data-testid="sport-editor--dialog">
         <DialogHeader>
           <DialogTitle>{mode === "add" ? "Dodaj nowy sport" : "Edytuj sport"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="sport-editor--form">
             {mode === "add" && (
               <FormField
                 control={form.control}
@@ -146,7 +168,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
                       defaultValue={field.value?.toString()}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger data-testid="sport-editor--sport-select">
                           <SelectValue placeholder="Wybierz sport" />
                         </SelectTrigger>
                       </FormControl>
@@ -177,6 +199,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
                       max={100}
                       placeholder="Domyślny"
                       {...field}
+                      data-testid="sport-editor--custom-range-input"
                       onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                     />
                   </FormControl>
@@ -199,7 +222,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
                       onValueChange={(value) => handleParameterChange(paramConfig.name, value, paramConfig)}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger data-testid={`sport-editor--param-${paramConfig.name}`}>
                           <SelectValue placeholder={paramConfig.placeholder} />
                         </SelectTrigger>
                       </FormControl>
@@ -230,6 +253,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
                       placeholder={paramConfig.placeholder}
                       min={paramConfig.min}
                       max={paramConfig.max}
+                      data-testid={`sport-editor--param-${paramConfig.name}`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -238,10 +262,17 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
             })}
 
             <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={onClose}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={onClose}
+                data-testid="sport-editor--cancel-button"
+              >
                 Anuluj
               </Button>
-              <Button type="submit">Zapisz</Button>
+              <Button type="submit" data-testid="sport-editor--save-button">
+                Zapisz
+              </Button>
             </div>
           </form>
         </Form>

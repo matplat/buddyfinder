@@ -16,7 +16,7 @@ interface UserMatchCardProps {
 
 export const UserMatchCard: FC<UserMatchCardProps> = ({ match }) => {
   return (
-    <AccordionItem value={match.user_id} className="border rounded-lg px-4">
+    <AccordionItem value={match.user_id} className="border rounded-lg px-4" data-testid="match-card">
       <AccordionTrigger className="hover:no-underline">
         <div className="flex items-center justify-between w-full pr-4">
           <div className="flex flex-col items-start gap-1">
@@ -74,9 +74,8 @@ export const UserMatchCard: FC<UserMatchCardProps> = ({ match }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 border rounded-md text-xs hover:bg-muted transition-colors"
-                      aria-label={`Link do ${config.name}`}
                     >
-                      <Icon className="h-3.5 w-3.5" />
+                      <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                       <span>{config.name}</span>
                     </a>
                   );

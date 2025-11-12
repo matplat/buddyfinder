@@ -66,7 +66,7 @@ export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({ isOpen
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" data-testid="social-link-editor--dialog">
         <DialogHeader>
           <DialogTitle>Edytuj link do {platformConfig?.name || platform}</DialogTitle>
         </DialogHeader>
@@ -79,17 +79,24 @@ export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({ isOpen
                 <FormItem>
                   <FormLabel>Link do profilu</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="https://" />
+                    <Input {...field} placeholder="https://" data-testid="social-link-editor--url-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex justify-end gap-3">
-              <Button variant="outline" type="button" onClick={onClose}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={onClose}
+                data-testid="social-link-editor--cancel-button"
+              >
                 Anuluj
               </Button>
-              <Button type="submit">Zapisz</Button>
+              <Button type="submit" data-testid="social-link-editor--save-button">
+                Zapisz
+              </Button>
             </div>
           </form>
         </Form>
