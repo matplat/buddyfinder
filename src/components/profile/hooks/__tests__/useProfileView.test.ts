@@ -266,11 +266,11 @@ describe("useProfileView", () => {
         expect(result.current.userSports[0].params).toEqual(updatedSport.parameters);
       });
 
-      // Check last call to fetch (the PATCH request)
+      // Check last call to fetch (the PUT request)
       const lastCall = mockFetch.mock.calls[mockFetch.mock.calls.length - 1];
       expect(lastCall[0]).toBe(`/api/profiles/me/sports/${mockSportBieganie.id}`);
       expect(lastCall[1]).toMatchObject({
-        method: "PATCH",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(mockUpdateUserSportCommand),
       });
