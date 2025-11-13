@@ -92,9 +92,9 @@ export const ProfilePanel: FC<ProfilePanelProps> = ({
         className="absolute top-1/2 -translate-y-1/2 -right-4 h-16 w-8 rounded-l-lg rounded-r-none bg-background border border-r-0 border-border hover:bg-accent shadow-md rotate-180"
       >
         {panelState.isCollapsed ? (
-          <ChevronRight className="h-5 w-5" aria-hidden="true" />
-        ) : (
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+        ) : (
+          <ChevronRight className="h-5 w-5" aria-hidden="true" />
         )}
       </Button>
     </aside>

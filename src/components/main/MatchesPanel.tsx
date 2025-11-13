@@ -92,9 +92,9 @@ export const MatchesPanel: FC<MatchesPanelProps> = ({
         className="absolute top-1/2 -translate-y-1/2 -left-4 h-16 w-8 rounded-r-lg rounded-l-none bg-background border border-l-0 border-border hover:bg-accent shadow-md rotate-180"
       >
         {panelState.isCollapsed ? (
-          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-        ) : (
           <ChevronRight className="h-5 w-5" aria-hidden="true" />
+        ) : (
+          <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         )}
       </Button>
     </aside>

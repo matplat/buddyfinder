@@ -31,12 +31,12 @@ export const UserMatchCard: FC<UserMatchCardProps> = ({ match }) => {
       <AccordionContent className="pt-4 pb-4">
         <div className="space-y-4">
           {/* Email */}
-          <div className="flex items-center gap-2 text-sm">
+          {/* <div className="flex items-center gap-2 text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" />
             <a href={`mailto:${match.email}`} className="text-primary hover:underline">
               {match.email}
             </a>
-          </div>
+          </div> */}
 
           {/* Sports */}
           {match.sports.length > 0 && (
