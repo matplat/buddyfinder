@@ -32,7 +32,7 @@ export default defineConfig({
     include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
 
     // Exclude patterns
-    exclude: ["node_modules", "dist", ".astro", "coverage", "**/node_modules/**", "**/dist/**", "**/.astro/**"],
+    exclude: ["node_modules", "dist", ".astro", "coverage", "**/node_modules/**", "**/dist/**", "**/.astro/**","test/e2e/**"],
   },
 
   // Resolve aliases to match tsconfig.json

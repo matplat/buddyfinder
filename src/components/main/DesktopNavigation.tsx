@@ -38,6 +38,7 @@ export const DesktopNavigation: FC = () => {
             size="sm"
             onClick={handleLogout}
             className="text-sm text-muted-foreground hover:text-foreground"
+            data-testid="desktop-navigation--logout-button"
           >
             Wyloguj
           </Button>

@@ -18,7 +18,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MatchesView } from "../MatchesView";
 import type { useMatchesView } from "../hooks/useMatchesView";
-import { mockMatchedUserClose, mockMatchedUserMedium } from "test/unit/fixtures/matches";
+import { mockMatchedUserClose, mockMatchedUserMedium } from "@test/unit/fixtures/matches";
 import type { UserMatchViewModel } from "../types";
 
 // Mock the useMatchesView hook
@@ -39,7 +39,7 @@ vi.mock("../MatchesEmptyState", () => ({
     <div data-testid={`empty-state-${variant}`}>
       <h2>{title}</h2>
       <p>{description}</p>
-      {cta && <button onClick={cta.onClick}>{cta.text}</button>}
+      {cta && <a href={cta.href}>{cta.text}</a>}
     </div>
   ),
 }));
@@ -115,7 +115,7 @@ describe("MatchesView", () => {
       expect(screen.getByTestId("empty-state-no-location")).toBeInTheDocument();
       expect(screen.getByText("Brak ustawionej lokalizacji")).toBeInTheDocument();
       expect(screen.getByText(/musisz najpierw uzupełnić swoją lokalizację/)).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /uzupełnij profil/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /uzupełnij profil/i })).toBeInTheDocument();
     });
 
     it("should navigate to profile when clicking CTA in no_location state", async () => {
@@ -130,16 +130,12 @@ describe("MatchesView", () => {
         loadMore: vi.fn(),
       });
 
-      // Mock window.location
-      delete (window as any).location;
-      window.location = { href: "" } as any;
-
       // Act
       render(<MatchesView />);
-      await user.click(screen.getByRole("button", { name: /uzupełnij profil/i }));
+      const link = screen.getByRole("link", { name: /uzupełnij profil/i });
 
       // Assert
-      expect(window.location.href).toBe("/profile");
+      expect(link).toHaveAttribute("href", "/profile");
     });
 
     it("should render generic error state", () => {
@@ -182,7 +178,7 @@ describe("MatchesView", () => {
       expect(screen.getByTestId("empty-state-no-matches")).toBeInTheDocument();
       expect(screen.getByText("Brak dopasowań")).toBeInTheDocument();
       expect(screen.getByText(/nie znaleźliśmy nikogo w twoim zasięgu/i)).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /edytuj profil/i })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: /edytuj profil/i })).toBeInTheDocument();
     });
   });
 

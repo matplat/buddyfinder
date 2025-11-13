@@ -150,7 +150,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <CardContent className="p-6">
-          <Accordion type="multiple" defaultValue={["profile-data", "profile-sports"]} className="w-full">
+          <Accordion type="multiple" defaultValue={["profile-data", "profile-sports"]} className="w-full" data-testid="profile-view--accordion">
             <AccordionItem value="profile-data">
               <AccordionTrigger className="text-lg font-semibold">Dane profilu</AccordionTrigger>
               <AccordionContent className="pt-6">
