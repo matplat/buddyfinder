@@ -1,0 +1,22 @@
+name: Setup workspace
+
+description: Configure Node.js and install dependencies.
+
+inputs:
+  node-version-file:
+    description: Path to the file containing the Node.js version (defaults to .nvmrc).
+    required: false
+    default: .nvmrc
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version-file: ${{ inputs['node-version-file'] }}
+        cache: npm
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
