@@ -17,6 +17,10 @@ runs:
         node-version-file: ${{ inputs['node-version-file'] }}
         cache: npm
 
+    - name: Update package-lock.json
+      shell: bash
+      run: npm install --package-lock-only
+
     - name: Install dependencies
       shell: bash
       run: npm ci
