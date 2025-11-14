@@ -36,4 +36,4 @@ Architektura opiera się na podejściu "full-stack" z wykorzystaniem frameworka 
     Lekka, otwarta biblioteka JavaScript do tworzenia interaktywnych map. Zostanie użyta do renderowania kafelków mapy z OpenStreetMaps i obsługi interakcji użytkownika, takich jak zaznaczanie lokalizacji i wizualizacja zasięgu.
 
 * **CI/CD i Hosting**
-    Do tworzenia i uruchamiania pipeline'ów CI/CD wykorzystywane jest Github Actions jako domyślne narzędzie dla repozytoriów na GitHub. Jako hosting aplikacji Astro wybrany został CloudFlare Pages.
+    Do tworzenia i uruchamiania pipeline'ów CI/CD wykorzystywane jest Github Actions jako domyślne narzędzie dla repozytoriów na GitHub. Jako hosting aplikacji Astro wybrany został Cloudflare Pages.
