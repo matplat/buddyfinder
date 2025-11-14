@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
@@ -19,4 +19,16 @@ export default defineConfig({
       enabled: true,
     },
   }),
+  env: {
+    schema: {
+      SUPABASE_URL: envField.string({
+        context: "client",
+        access: "public",
+      }),
+      SUPABASE_KEY: envField.string({
+        context: "client",
+        access: "public",
+      }),
+    },
+  },
 });
