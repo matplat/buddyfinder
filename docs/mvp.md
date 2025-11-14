@@ -1,4 +1,4 @@
-# Aplikacja BuddyFinder (MVP)
+# Aplikacja FITLink (MVP)
 
 ## Główny problem
 

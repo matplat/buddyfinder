@@ -1,5 +1,11 @@
 # Plany na rozwój
 
+## Kwestie techniczne
+
+- [ ] Feature flagi,
+- [ ] Cache'owanie wyników zapytań,
+- [ ] Działający customowy zasięg
+
 ## Wstępne pomysły
 
 - [x] Linki do innych social mediów i platform w profilu,
@@ -9,6 +15,10 @@
   - [ ] Otrzymane zaproszenia,
   - [ ] Zaakceptowane ("znajomi"),
 - [ ] Przycisk "jak mnie widzą inni",
+- [ ] Wprowadzanie sportów:
+  - [ ] slidery z wartościami i inputami liczbowymi,
+  - [ ] dropdowny (tam gdzie możliwe),
+- [ ] Ikony sportów zamiast nazw
 
 ## Sugestie AI
 
@@ -19,3 +29,12 @@
 - [ ] Dodanie kontroli logowania przez nazwę użytkownika (username),
 
 ## Sugestie użytkowników i alfa/beta-testerów
+
+- [ ] Ładniejszy widok dopasowań,
+- [ ] Social Badge - mniejszy,
+  - [ ] Zmniejszony ("nie musi być taki duży"),
+  - [ ] Walidacja linków,
+- [ ] Zdjęcia profilowe użytkowników,
+  - [ ] automatyczne pobieranie z innych platform?
+- [ ] Lepszy UI,
+- [ ] Inny pasek nawigachji na górze strony

@@ -1,6 +1,6 @@
 # Social media
 
-Ten plik zawiera informacje o najważniejszych platformach społecznościowych dla sportowców, które są wspierane w aplikacji BuddyFinder.
+Ten plik zawiera informacje o najważniejszych platformach społecznościowych dla sportowców, które są wspierane w aplikacji FITLink.
 
 ## Instagram
 - **Nazwa**: Instagram

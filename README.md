@@ -1,8 +1,8 @@
-# BuddyFinder
+# FITLink
 
 ## Table of Contents
 
-- [BuddyFinder](#buddyfinder)
+- [FITLink](#fitlink)
   - [Table of Contents](#table-of-contents)
   - [Project Description](#project-description)
   - [Tech Stack](#tech-stack)
@@ -19,7 +19,7 @@
 
 ## Project Description
 
-BuddyFinder is a web application designed to connect amateur athletes and sports enthusiasts. It addresses the common challenge of finding training partners with similar skill levels, interests, and geographical proximity. Users can create a profile, specify their favorite sports and skill levels, and discover others in their area to team up with for activities.
+FITLink is a web application designed to connect amateur athletes and sports enthusiasts. It addresses the common challenge of finding training partners with similar skill levels, interests, and geographical proximity. Users can create a profile, specify their favorite sports and skill levels, and discover others in their area to team up with for activities.
 
 ## Tech Stack
 
@@ -60,8 +60,8 @@ BuddyFinder is a web application designed to connect amateur athletes and sports
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/buddyfinder.git
-    cd buddyfinder
+    git clone https://github.com/your-username/fitlink.git
+    cd fitlink
     ```
 
 2. **Install dependencies:**
@@ -131,7 +131,7 @@ See `/docs/test-plan.md` for detailed testing strategy and coverage requirements
 
 ## Project Scope
 
-The MVP (Minimum Viable Product) of BuddyFinder includes the following features:
+The MVP (Minimum Viable Product) of FITLink includes the following features:
 
 - **User Account Management**: Registration, login, and logout.
 - **User Profile Management**:

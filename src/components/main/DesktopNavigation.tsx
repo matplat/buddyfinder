@@ -29,7 +29,7 @@ export const DesktopNavigation: FC = () => {
     <nav className="hidden md:block fixed top-0 left-0 right-0 z-40 border-b border-border bg-background">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         <a href="/" className="text-xl font-bold hover:text-primary">
-          BuddyFinder
+          FITLink
         </a>
 
         <div className="flex items-center gap-4">

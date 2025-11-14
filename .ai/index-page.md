@@ -2,7 +2,9 @@
 
 ## 1. Przegląd
 
-Strona główna (`/`) aplikacji BuddyFinder jest kluczowym interfejsem, który integruje trzy główne funkcjonalności aplikacji w jeden spójny widok:
+# Strona główna (/) w aplikacji FITLink
+
+Strona główna (`/`) aplikacji FITLink jest kluczowym interfejsem, który integruje trzy główne funkcjonalności aplikacji w jeden spójny widok:
 - **MapView** - interaktywną mapę do zarządzania lokalizacją i zasięgiem wyszukiwania
 - **ProfileView** - panel zarządzania profilem użytkownika
 - **MatchesView** - listę dopasowanych partnerów treningowych

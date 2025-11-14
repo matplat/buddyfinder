@@ -122,7 +122,7 @@ export const RegisterForm: FC = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Utwórz konto</CardTitle>
-          <CardDescription>Wypełnij poniższy formularz, aby dołączyć do BuddyFinder</CardDescription>
+          <CardDescription>Wypełnij poniższy formularz, aby dołączyć do FITLink</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">

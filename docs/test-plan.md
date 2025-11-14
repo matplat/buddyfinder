@@ -1,10 +1,10 @@
-# Plan Testów Aplikacji BuddyFinder
+# Plan Testów Aplikacji FITLink
 
 ## 1. Wprowadzenie i cele testowania
 
 ### 1.1. Wprowadzenie
 
-Niniejszy dokument opisuje plan testów dla aplikacji internetowej BuddyFinder w wersji MVP. Plan ten ma na celu zapewnienie, że aplikacja spełnia wymagania funkcjonalne i niefunkcjonalne określone w dokumencie wymagań produktu (PRD), a także gwarantuje wysoką jakość, stabilność i bezpieczeństwo przed wdrożeniem produkcyjnym.
+Niniejszy dokument opisuje plan testów dla aplikacji internetowej FITLink w wersji MVP. Plan ten ma na celu zapewnienie, że aplikacja spełnia wymagania funkcjonalne i niefunkcjonalne określone w dokumencie wymagań produktu (PRD), a także gwarantuje wysoką jakość, stabilność i bezpieczeństwo przed wdrożeniem produkcyjnym.
 
 ### 1.2. Cele testowania
 

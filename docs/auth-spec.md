@@ -2,7 +2,7 @@
 
 ## 1. Wprowadzenie
 
-Niniejszy dokument opisuje architekturę i plan implementacji funkcjonalności rejestracji, logowania, wylogowywania oraz odzyskiwania hasła w aplikacji BuddyFinder.
+Niniejszy dokument opisuje architekturę i plan implementacji funkcjonalności rejestracji, logowania, wylogowywania oraz odzyskiwania hasła w aplikacji FITLink.
 
 Kluczowym założeniem jest wykorzystanie **Supabase Auth** jako dostawcy usług autentykacji oraz integracja z frameworkiem **Astro** działającym w trybie `output: "server"`.
 

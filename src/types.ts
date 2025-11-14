@@ -1,6 +1,6 @@
 /**
  * This file contains the Data Transfer Object (DTO) and Command Model types
- * for the BuddyFinder API. These types are derived from the database
+ * for the FITLink API. These types are derived from the database
  * models to ensure consistency and type safety between the API layer and
  * the database.
  */

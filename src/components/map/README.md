@@ -1,6 +1,6 @@
 # Komponenty Map
 
-Ten folder zawiera komponenty odpowiedzialne za wyświetlanie i zarządzanie interaktywną mapą OpenStreetMap w aplikacji BuddyFinder.
+Ten folder zawiera komponenty odpowiedzialne za wyświetlanie i zarządzanie interaktywną mapą OpenStreetMap w aplikacji FITLink.
 
 ## Struktura
 

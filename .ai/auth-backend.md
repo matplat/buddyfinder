@@ -1,6 +1,6 @@
-# Instrukcje Implementacji Backendu Autentykacji - BuddyFinder
+# Instrukcje Implementacji Backendu Autentykacji - FITLink
 
- Ten dokument zawiera krok po kroku instrukcje implementacji pełnego systemu autentykacji dla aplikacji BuddyFinder. Wykonaj kroki w podanej kolejności.
+ Ten dokument zawiera krok po kroku instrukcje implementacji pełnego systemu autentykacji dla aplikacji FITLink. Wykonaj kroki w podanej kolejności.
 
 ---
 
@@ -55,7 +55,7 @@ Stwórz nowy plik:
 ```sql
 -- Migration: Add Username Synchronization Trigger
 -- Description: Synchronizes username from auth.users.raw_user_meta_data to profiles.username
--- Author: BuddyFinder Team
+-- Author: FITLink Team
 -- Date: 2025-11-06
 
 -- Create trigger function to sync username from auth metadata to profile
@@ -720,7 +720,7 @@ interface Props {
   title?: string;
 }
 
-const { title = "BuddyFinder" } = Astro.props;
+const { title = "FITLink" } = Astro.props;
 
 // Odczytaj sesję z middleware
 const session = Astro.locals.session;
@@ -739,7 +739,7 @@ const session = Astro.locals.session;
     <nav class="border-b border-border bg-background">
       <div class="container mx-auto flex items-center justify-between px-4 py-3">
         <a href="/" class="text-xl font-bold hover:text-primary">
-          BuddyFinder
+          FITLink
         </a>
         
         <div class="flex items-center gap-4">
@@ -834,7 +834,7 @@ import { LoginForm } from "../components/auth/LoginForm";
 // Nie trzeba dodawać dodatkowej logiki tutaj
 ---
 
-<Layout title="Logowanie - BuddyFinder">
+<Layout title="Logowanie - FITLink">
   <LoginForm client:load />
 </Layout>
 ```
@@ -853,7 +853,7 @@ import { RegisterForm } from "../components/auth/RegisterForm";
 // Middleware już obsługuje redirect dla zalogowanych użytkowników
 ---
 
-<Layout title="Rejestracja - BuddyFinder">
+<Layout title="Rejestracja - FITLink">
   <RegisterForm client:load />
 </Layout>
 ```
@@ -872,7 +872,7 @@ import { ForgotPasswordForm } from "../components/auth/ForgotPasswordForm";
 // Middleware już obsługuje redirect dla zalogowanych użytkowników
 ---
 
-<Layout title="Odzyskiwanie hasła - BuddyFinder">
+<Layout title="Odzyskiwanie hasła - FITLink">
   <ForgotPasswordForm client:load />
 </Layout>
 ```
@@ -911,7 +911,7 @@ Sprawdź i upewnij się, że są skonfigurowane:
 - **Confirm signup** - Template dla weryfikacji email
 - **Reset password** - Template dla reset hasła
 
-Domyślne szablony są OK, ale możesz je dostosować do brandingu BuddyFinder.
+Domyślne szablony są OK, ale możesz je dostosować do brandingu FITLink.
 
 ### 10.2. URL Configuration
 

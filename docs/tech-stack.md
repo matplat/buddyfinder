@@ -1,4 +1,4 @@
-# BuddyFinder tech stack
+# FITLink tech stack
 
 Architektura opiera się na podejściu "full-stack" z wykorzystaniem frameworka Astro oraz platformy Supabase jako Backend-as-a-Service (BaaS).
 

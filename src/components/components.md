@@ -1,4 +1,4 @@
-# Komponenty w BuddyFinder
+# Komponenty w FITLink
 
 ## Komponenty Profile View
 

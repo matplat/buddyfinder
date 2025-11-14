@@ -1,12 +1,12 @@
-# Dokument wymagań produktu (PRD) - BuddyFinder
+# Dokument wymagań produktu (PRD) - FITLink
 
 ## 1. Przegląd produktu
 
-BuddyFinder to aplikacja internetowa zaprojektowana w celu rozwiązania problemu braku platformy społecznościowej dla sportowców-amatorów, umożliwiającej nawiązywanie kontaktów na podstawie wspólnych aktywności sportowych. Aplikacja pozwoli użytkownikom na stworzenie prostego profilu, w którym zdefiniują uprawiane sporty, określą swój poziom zaawansowania poprzez specyficzne parametry oraz wskażą swoją lokalizację i zasięg, w jakim są skłonni podróżować. Główną funkcją produktu jest prezentowanie listy innych użytkowników o pasujących preferencjach i zazębiających się lokalizacjach, ułatwiając w ten sposób znalezienie partnerów treningowych. Wersja MVP skupia się na podstawowej funkcjonalności dopasowania i umożliwieniu kontaktu poprzez udostępnienie adresu e-mail.
+FITLink to aplikacja internetowa zaprojektowana w celu rozwiązania problemu braku platformy społecznościowej dla sportowców-amatorów, umożliwiającej nawiązywanie kontaktów na podstawie wspólnych aktywności sportowych. Aplikacja pozwoli użytkownikom na stworzenie prostego profilu, w którym zdefiniują uprawiane sporty, określą swój poziom zaawansowania poprzez specyficzne parametry oraz wskażą swoją lokalizację i zasięg, w jakim są skłonni podróżować. Główną funkcją produktu jest prezentowanie listy innych użytkowników o pasujących preferencjach i zazębiających się lokalizacjach, ułatwiając w ten sposób znalezienie partnerów treningowych. Wersja MVP skupia się na podstawowej funkcjonalności dopasowania i umożliwieniu kontaktu poprzez udostępnienie adresu e-mail.
 
 ## 2. Problem użytkownika
 
-Na rynku brakuje aplikacji i platform socjalnych, które pozwalałyby sportowcom-amatorom w prosty i skuteczny sposób odnaleźć partnerów treningowych. Osoby aktywne fizycznie często mają trudności ze znalezieniem osób o podobnym poziomie zaawansowania, uprawiających te same dyscypliny i mieszkających w bliskiej okolicy. Istniejące ogólne platformy społecznościowe nie są do tego przystosowane, a grupy tematyczne często są zbyt szerokie, co utrudnia efektywne dopasowanie. BuddyFinder ma na celu wypełnienie tej luki, tworząc narzędzie skoncentrowane wyłącznie na łączeniu ludzi poprzez sport.
+Na rynku brakuje aplikacji i platform socjalnych, które pozwalałyby sportowcom-amatorom w prosty i skuteczny sposób odnaleźć partnerów treningowych. Osoby aktywne fizycznie często mają trudności ze znalezieniem osób o podobnym poziomie zaawansowania, uprawiających te same dyscypliny i mieszkających w bliskiej okolicy. Istniejące ogólne platformy społecznościowe nie są do tego przystosowane, a grupy tematyczne często są zbyt szerokie, co utrudnia efektywne dopasowanie. FITLink ma na celu wypełnienie tej luki, tworząc narzędzie skoncentrowane wyłącznie na łączeniu ludzi poprzez sport.
 
 ## 3. Wymagania funkcjonalne
 

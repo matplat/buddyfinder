@@ -1,8 +1,8 @@
-# Architektura UI dla BuddyFinder
+# Architektura UI dla FITLink
 
 ## 1. Przegląd struktury UI
 
-Architektura interfejsu użytkownika (UI) dla BuddyFinder jest oparta na podejściu "mobile-first", co oznacza, że projekt i układ są zoptymalizowane przede wszystkim dla urządzeń mobilnych. Głównym elementem nawigacyjnym jest dolny pasek z trzema zakładkami, zapewniający stały i łatwy dostęp do kluczowych sekcji aplikacji: "Profil", "Mapa" i "Znajomi".
+Architektura interfejsu użytkownika (UI) dla FITLink jest oparta na podejściu "mobile-first", co oznacza, że projekt i układ są zoptymalizowane przede wszystkim dla urządzeń mobilnych. Głównym elementem nawigacyjnym jest dolny pasek z trzema zakładkami, zapewniający stały i łatwy dostęp do kluczowych sekcji aplikacji: "Profil", "Mapa" i "Znajomi".
 
 Aplikacja zostanie zbudowana przy użyciu frameworka Astro z komponentami React. W celu zapewnienia spójności wizualnej, dostępności (a11y) i przyspieszenia rozwoju, interfejs będzie intensywnie korzystał z biblioteki komponentów `shadcn/ui`. Zarządzanie stanem serwera (pobieranie danych, buforowanie, paginacja) będzie obsługiwane przez bibliotekę TanStack Query, a stan sesji użytkownika przez `@supabase/supabase-js`.
 

@@ -3,7 +3,7 @@
 
 ### 1. Cel testów E2E
 
-Testy End-to-End mają na celu weryfikację trzech kluczowych funkcjonalności aplikacji BuddyFinder w rzeczywistym środowisku działania aplikacji, z perspektywy użytkownika końcowego:
+Testy End-to-End mają na celu weryfikację trzech kluczowych funkcjonalności aplikacji FITLink w rzeczywistym środowisku działania aplikacji, z perspektywy użytkownika końcowego:
 
 - **US-004**: Zarządzanie sportami w profilu (dodawanie, edycja, usuwanie)
 - **US-009**: Przeglądanie listy dopasowanych partnerów na podstawie lokalizacji i zasięgu
@@ -889,4 +889,4 @@ jobs:
 
 **Dokument przygotowany**: 2025-11-11  
 **Wersja**: 1.0  
-**Autor**: QA Engineer - BuddyFinder Team
+**Autor**: QA Engineer - FITLink Team
