@@ -1,5 +1,5 @@
 import type { GetMatchesResponseDto, MatchedUserDto } from "@/types";
-import type { supabaseClient } from "@/db/supabase.client";
+import type { SupabaseClient } from "@/db/supabase.server";
 import { createLogger } from "@/lib/logger";
 
 interface GetMatchesResult {
@@ -10,7 +10,7 @@ interface GetMatchesResult {
 export class MatchesService {
   private readonly logger = createLogger("MatchesService");
 
-  constructor(private readonly supabase: typeof supabaseClient) {}
+  constructor(private readonly supabase: SupabaseClient) {}
 
   /**
    * Retrieves potential matches for the current user based on location and sports preferences

@@ -16,8 +16,10 @@ export interface ApiErrorResponse {
  */
 export const ApiErrorCode = {
   VALIDATION_ERROR: "VALIDATION_ERROR",
+  BAD_REQUEST: "BAD_REQUEST",
   UNAUTHORIZED: "UNAUTHORIZED",
   NOT_FOUND: "NOT_FOUND",
+  CONFLICT: "CONFLICT",
   INTERNAL_ERROR: "INTERNAL_ERROR",
 } as const;
 
@@ -54,11 +56,14 @@ export function createValidationErrorResponse(error: ZodError): Response {
 function getHttpStatusForErrorCode(code: keyof typeof ApiErrorCode): number {
   switch (code) {
     case "VALIDATION_ERROR":
+    case "BAD_REQUEST":
       return 400;
     case "UNAUTHORIZED":
       return 401;
     case "NOT_FOUND":
       return 404;
+    case "CONFLICT":
+      return 409;
     case "INTERNAL_ERROR":
       return 500;
     default:

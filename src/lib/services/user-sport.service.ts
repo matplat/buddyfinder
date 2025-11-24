@@ -1,6 +1,6 @@
 import type { Json } from "@/db/database.types";
 import type { UserSportDto, AddUserSportCommand, UpdateUserSportCommand } from "@/types";
-import type { supabaseClient } from "@/db/supabase.client";
+import type { SupabaseClient } from "@/db/supabase.server";
 import { createLogger } from "@/lib/logger";
 
 /**
@@ -36,7 +36,7 @@ export class UserSportNotFoundError extends Error {
 export class UserSportService {
   private readonly logger = createLogger("UserSportService");
 
-  constructor(private readonly supabase: typeof supabaseClient) {}
+  constructor(private readonly supabase: SupabaseClient) {}
 
   /**
    * Updates a sport in user's profile
