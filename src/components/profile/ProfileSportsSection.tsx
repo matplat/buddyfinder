@@ -16,11 +16,7 @@ export const ProfileSportsSection: FC<ProfileSportsSectionProps> = ({ userSports
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Twoje sporty</h3>
-        <Button
-          onClick={onAdd}
-          className="inline-flex items-center gap-2"
-          data-testid="profile-sports--add-button"
-        >
+        <Button onClick={onAdd} className="inline-flex items-center gap-2" data-testid="profile-sports--add-button">
           <PlusCircle className="h-4 w-4" />
           Dodaj sport
         </Button>

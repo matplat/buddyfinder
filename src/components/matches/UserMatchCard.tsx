@@ -5,7 +5,7 @@
 
 import { type FC } from "react";
 import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { MapPin, Mail } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { UserMatchViewModel } from "./types";
 import { getPlatformConfig } from "@/lib/config/social-platforms.config";
 import { SportBadge } from "@/components/shared/SportBadge";

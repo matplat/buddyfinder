@@ -29,13 +29,20 @@ interface SportEditorDialogProps {
 }
 
 const formSchema = z.object({
-  sport_id: z.number({
-    required_error: "Wybierz sport z listy",
-    invalid_type_error: "Nieprawidłowy sport"
-  }).int("Sport musi być liczbą całkowitą").positive("Wybierz sport z listy"),
-  custom_range_km: z.number({
-    invalid_type_error: "Zasięg musi być liczbą"
-  }).min(1, "Zasięg musi być większy niż 0").max(100, "Zasięg nie może przekraczać 100 km").optional(),
+  sport_id: z
+    .number({
+      required_error: "Wybierz sport z listy",
+      invalid_type_error: "Nieprawidłowy sport",
+    })
+    .int("Sport musi być liczbą całkowitą")
+    .positive("Wybierz sport z listy"),
+  custom_range_km: z
+    .number({
+      invalid_type_error: "Zasięg musi być liczbą",
+    })
+    .min(1, "Zasięg musi być większy niż 0")
+    .max(100, "Zasięg nie może przekraczać 100 km")
+    .optional(),
   parameters: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
 });
 
@@ -262,12 +269,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
             })}
 
             <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={onClose}
-                data-testid="sport-editor--cancel-button"
-              >
+              <Button variant="outline" type="button" onClick={onClose} data-testid="sport-editor--cancel-button">
                 Anuluj
               </Button>
               <Button type="submit" data-testid="sport-editor--save-button">

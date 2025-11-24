@@ -30,7 +30,7 @@ import { type FC, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Toaster } from "@/components/ui/sonner";
-import { useProfileView } from "@/components/profile/hooks/useProfileView";
+import { useProfileStore } from "@/components/profile/hooks/useProfileStore";
 import { ProfileDataSection } from "@/components/profile/ProfileDataSection";
 import { ProfileSportsSection } from "@/components/profile/ProfileSportsSection";
 import { SocialMediaEditorDialog } from "@/components/profile/SocialMediaEditorDialog";
@@ -60,7 +60,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
     addSport,
     editSport,
     deleteSport,
-  } = useProfileView({ onDataChange });
+  } = useProfileStore({ onDataChange });
 
   // Social media dialogs state
   const [isSocialMediaEditorOpen, setIsSocialMediaEditorOpen] = useState(false);
@@ -150,7 +150,12 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
     <div className="container mx-auto px-4 py-8">
       <Card>
         <CardContent className="p-6">
-          <Accordion type="multiple" defaultValue={["profile-data", "profile-sports"]} className="w-full" data-testid="profile-view--accordion">
+          <Accordion
+            type="multiple"
+            defaultValue={["profile-data", "profile-sports"]}
+            className="w-full"
+            data-testid="profile-view--accordion"
+          >
             <AccordionItem value="profile-data">
               <AccordionTrigger className="text-lg font-semibold">Dane profilu</AccordionTrigger>
               <AccordionContent className="pt-6">
@@ -165,10 +170,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
             </AccordionItem>
 
             <AccordionItem value="profile-sports" data-testid="profile-view--sports-accordion">
-              <AccordionTrigger
-                className="text-lg font-semibold"
-                data-testid="profile-view--sports-accordion-toggle"
-              >
+              <AccordionTrigger className="text-lg font-semibold" data-testid="profile-view--sports-accordion-toggle">
                 Sporty
               </AccordionTrigger>
               <AccordionContent className="pt-6" data-testid="profile-view--sports-section">

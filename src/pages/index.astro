@@ -2,17 +2,73 @@
 /**
  * Main application page - BuddyFinder
  * Integrates MapView, ProfileView, and MatchesView in a responsive layout
+ *
+ * SSR: Fetches initial user data (profile, sports, available sports) and passes
+ * to MainView for store initialization. This ensures data is available immediately
+ * on first render without additional client-side fetches.
  */
 import "../styles/global.css";
 import { MainView } from "@/components/main/MainView";
+import { ProfileService } from "@/lib/services/profile.service";
+import { UserSportService } from "@/lib/services/user-sport.service";
+import { SportService } from "@/lib/services/sport.service";
+import { createLogger } from "@/lib/logger";
+import type { ProfileDto, UserSportDto, SportDto } from "@/types";
+
+const logger = createLogger("index.astro");
 
 // Check authentication - user is set by middleware
 const user = Astro.locals.user;
+const supabase = Astro.locals.supabase;
 
 // If no user (shouldn't happen due to middleware), redirect to login
 if (!user) {
+  logger.warn("No authenticated user, redirecting to login");
   return Astro.redirect("/login");
 }
+
+// Initialize services
+const profileService = new ProfileService(supabase);
+const userSportService = new UserSportService(supabase);
+const sportService = new SportService(supabase);
+
+// Fetch all initial data in parallel for optimal performance
+logger.info("Fetching initial data for user", { userId: user.id });
+
+let profile: ProfileDto | null = null;
+let userSports: UserSportDto[] = [];
+let availableSports: SportDto[] = [];
+
+try {
+  const [profileData, userSportsData, availableSportsData] = await Promise.all([
+    profileService.getCurrentUserProfile(user.id),
+    userSportService.getUserSports(user.id),
+    sportService.getAllSports(),
+  ]);
+
+  profile = profileData;
+  userSports = userSportsData;
+  availableSports = availableSportsData;
+
+  logger.info("Successfully fetched initial data", {
+    userId: user.id,
+    hasProfile: !!profile,
+    sportsCount: userSports.length,
+    availableSportsCount: availableSports.length,
+  });
+} catch (error) {
+  logger.error("Failed to fetch initial data", { userId: user.id, error });
+  // Don't block the page - MainView will handle missing data gracefully
+  // and components can retry fetching if needed
+}
+
+// Prepare initial data for store
+const initialData = {
+  profile,
+  sports: userSports,
+  availableSports,
+  location: null, // Location will be set by MapView after user interaction
+};
 ---
 
 <!doctype html>
@@ -26,7 +82,11 @@ if (!user) {
     <meta name="description" content="Znajdź lokalnych partnerów treningowych do swoich ulubionych sportów" />
   </head>
   <body class="overflow-hidden">
-    <!-- MainView is a fullscreen React component that manages the entire UI -->
-    <MainView client:only="react" />
+    <!-- 
+      MainView is a fullscreen React component that manages the entire UI.
+      We pass initialData from SSR to initialize the Zustand store without 
+      additional client-side fetches. 
+    -->
+    <MainView client:only="react" initialData={initialData} />
   </body>
 </html>

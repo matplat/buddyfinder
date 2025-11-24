@@ -120,7 +120,6 @@ describe("MatchesView", () => {
 
     it("should navigate to profile when clicking CTA in no_location state", async () => {
       // Arrange
-      const user = userEvent.setup();
       mockUseMatchesView.mockReturnValue({
         matches: [],
         isLoading: false,
