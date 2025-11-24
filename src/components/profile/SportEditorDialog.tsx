@@ -109,12 +109,14 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
    */
   const convertToStorageValue = (value: string, paramType: ParameterConfig["type"]): number | string => {
     switch (paramType) {
-      case "pace":
+      case "pace": {
         const seconds = paceToSeconds(value);
         return seconds !== null ? seconds : value;
-      case "time":
+      }
+      case "time": {
         const minutes = timeToMinutes(value);
         return minutes !== null ? minutes : value;
+      }
       case "number":
         return parseFloat(value) || 0;
       case "enum":
@@ -138,15 +140,22 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
   };
 
   const handleParameterChange = (paramName: string, value: string, paramConfig: ParameterConfig) => {
-    const newParams = { ...currentParameters } as Record<string, string | number>;
+    const baseParams = { ...currentParameters } as Record<string, string | number>;
 
     if (value === "") {
-      delete newParams[paramName];
-    } else {
-      newParams[paramName] = convertToStorageValue(value, paramConfig.type);
+      const remainingParams = Object.fromEntries(
+        Object.entries(baseParams).filter(([key]) => key !== paramName)
+      ) as Record<string, string | number>;
+      form.setValue("parameters", remainingParams);
+      return;
     }
 
-    form.setValue("parameters", newParams);
+    const updatedParams = {
+      ...baseParams,
+      [paramName]: convertToStorageValue(value, paramConfig.type),
+    };
+
+    form.setValue("parameters", updatedParams);
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {

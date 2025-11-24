@@ -3,6 +3,8 @@ import type { AstroCookies } from "astro";
 import { SUPABASE_URL, SUPABASE_KEY } from "astro:env/server";
 import type { Database } from "./database.types";
 
+type AstroCookieOptions = Parameters<AstroCookies["set"]>[2];
+
 /**
  * Tworzy instancję klienta Supabase dla kontekstu serwerowego (SSR)
  * z zarządzaniem cookies przez @supabase/ssr
@@ -20,10 +22,10 @@ export function createServerSupabaseClient(cookies: AstroCookies) {
       get(name: string) {
         return cookies.get(name)?.value;
       },
-      set(name: string, value: string, options: any) {
+      set(name: string, value: string, options: AstroCookieOptions) {
         cookies.set(name, value, options);
       },
-      remove(name: string, options: any) {
+      remove(name: string, options: AstroCookieOptions) {
         cookies.delete(name, options);
       },
     },

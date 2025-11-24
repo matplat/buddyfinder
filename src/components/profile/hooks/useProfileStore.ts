@@ -22,6 +22,7 @@
  */
 
 import { toast } from "sonner";
+import { createLogger } from "@/lib/logger";
 import { useUserDataStore } from "@/lib/stores/user-data-store";
 import type { ProfileDto, UpdateProfileCommand, AddUserSportCommand, UpdateUserSportCommand } from "@/types";
 import type { SocialLinks } from "../types";
@@ -64,6 +65,8 @@ export interface UseProfileStoreProps {
   /** Callback when profile data changes that affects matches */
   onDataChange?: (updates: ProfileDataUpdates) => void;
 }
+
+const logger = createLogger("useProfileStore");
 
 /**
  * Hook for profile management with store integration.
@@ -111,7 +114,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       setProfileInStore(updatedProfile);
       toast.success("Nazwa wyświetlana została zaktualizowana");
     } catch (error) {
-      console.error("Error updating display name:", error);
+      logger.error("Error updating display name", error);
       toast.error("Nie udało się zaktualizować nazwy");
     }
   };
@@ -147,7 +150,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       setProfileInStore(updatedProfile);
       toast.success("Link został dodany");
     } catch (error) {
-      console.error("Error adding social link:", error);
+      logger.error("Error adding social link", error);
       toast.error("Nie udało się dodać linku");
     }
   };
@@ -183,7 +186,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       setProfileInStore(updatedProfile);
       toast.success("Link został zaktualizowany");
     } catch (error) {
-      console.error("Error editing social link:", error);
+      logger.error("Error editing social link", error);
       toast.error("Nie udało się zaktualizować linku");
     }
   };
@@ -213,7 +216,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       setProfileInStore(updatedProfile);
       toast.success("Link został usunięty");
     } catch (error) {
-      console.error("Error deleting social link:", error);
+      logger.error("Error deleting social link", error);
       toast.error("Nie udało się usunąć linku");
     }
   };
@@ -241,7 +244,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       // Notify parent about sports change (triggers matches refresh)
       onDataChange?.({ sportsChanged: true });
     } catch (error) {
-      console.error("Error adding sport:", error);
+      logger.error("Error adding sport", error);
       toast.error("Nie udało się dodać sportu");
     }
   };
@@ -269,7 +272,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       // Notify parent about sports change (triggers matches refresh)
       onDataChange?.({ sportsChanged: true });
     } catch (error) {
-      console.error("Error editing sport:", error);
+      logger.error("Error editing sport", error);
       toast.error("Nie udało się zaktualizować sportu");
     }
   };
@@ -294,7 +297,7 @@ export const useProfileStore = (props?: UseProfileStoreProps) => {
       // Notify parent about sports change (triggers matches refresh)
       onDataChange?.({ sportsChanged: true });
     } catch (error) {
-      console.error("Error deleting sport:", error);
+      logger.error("Error deleting sport", error);
       toast.error("Nie udało się usunąć sportu");
     }
   };

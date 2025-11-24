@@ -81,7 +81,7 @@ export const ProfileView: FC<ProfileViewProps> = ({ onDataChange }) => {
     isOpen: false,
     title: "",
     description: "",
-    onConfirm: () => {},
+    onConfirm: () => undefined,
   });
 
   const handleAddSocialLink = () => {

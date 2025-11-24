@@ -25,7 +25,7 @@ export const ProfileSportsSection: FC<ProfileSportsSectionProps> = ({ userSports
       {userSports.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center" data-testid="profile-sports--empty-state">
           <h4 className="text-sm font-medium text-muted-foreground">Nie masz jeszcze żadnych sportów</h4>
-          <p className="mt-1 text-sm text-muted-foreground">Kliknij "Dodaj sport" aby rozpocząć.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Kliknij przycisk Dodaj sport, aby rozpocząć.</p>
         </div>
       ) : (
         <div className="grid gap-4" data-testid="profile-sports--list">

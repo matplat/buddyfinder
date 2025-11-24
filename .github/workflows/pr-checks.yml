@@ -40,12 +40,7 @@ jobs:
 
       - name: Run ESLint on changed files
         run: |
-          if [ -z "${{ steps.changed.outputs.all_changed_files }}" ]; then
-            echo "No lintable files changed."
-            exit 0
-          fi
-
-          echo "${{ steps.changed.outputs.all_changed_files }}" | tr '\n' '\0' | xargs -0 npx eslint --max-warnings=0
+          echo "${{ steps.changed.outputs.all_changed_files }}" | tr '\n' '\0' | tr ' ' '\0' | xargs -0 -r npx eslint --max-warnings=0
 
   test_unit:
     name: Unit Tests
