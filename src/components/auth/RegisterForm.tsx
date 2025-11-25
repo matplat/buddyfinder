@@ -22,22 +22,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabaseClient } from "@/db/supabase.client";
+import { registerSchema } from "@/lib/dto/auth.dto";
 
-const registerSchema = z
-  .object({
-    username: z
-      .string()
-      .min(3, "Nazwa użytkownika musi mieć co najmniej 3 znaki")
-      .max(30, "Nazwa użytkownika nie może przekraczać 30 znaków")
-      .regex(/^[a-zA-Z0-9_-]+$/, "Nazwa użytkownika może zawierać tylko litery, cyfry, myślniki i podkreślenia"),
-    email: z.string().min(1, "Podaj adres email").email("Nieprawidłowy format adresu email"),
-    password: z
-      .string()
-      .min(8, "Hasło musi mieć co najmniej 8 znaków")
-      .regex(/[A-Z]/, "Hasło musi zawierać co najmniej jedną wielką literę")
-      .regex(/[a-z]/, "Hasło musi zawierać co najmniej jedną małą literę")
-      .regex(/[0-9]/, "Hasło musi zawierać co najmniej jedną cyfrę"),
+/**
+ * Extended schema for the registration form with confirmPassword field
+ * Uses the base registerSchema from auth.dto.ts for consistency with backend validation
+ */
+const registerFormSchema = registerSchema
+  .extend({
     confirmPassword: z.string().min(1, "Potwierdź hasło"),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -45,7 +37,7 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-type RegisterFormData = z.infer<typeof registerSchema>;
+type RegisterFormData = z.infer<typeof registerFormSchema>;
 
 export const RegisterForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,7 +49,8 @@ export const RegisterForm: FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerFormSchema),
+    mode: "onChange", // Real-time validation on every change
   });
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -65,24 +58,26 @@ export const RegisterForm: FC = () => {
     setApiError(null);
 
     try {
-      const { error } = await supabaseClient.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            username: data.username.toLowerCase(),
-          },
-          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-        },
+      // Call the /api/auth/register endpoint
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+        }),
       });
 
-      if (error) {
-        if (error.message.includes("already registered") || error.message.includes("User already registered")) {
-          throw new Error("Użytkownik o podanym adresie email już istnieje");
-        }
-        throw new Error(error.message);
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // Handle API errors
+        const errorMessage = responseData.error?.message || "Wystąpił błąd podczas rejestracji";
+        throw new Error(errorMessage);
       }
 
+      // Success - show email verification message
       setIsSuccess(true);
     } catch (error) {
       setApiError(error instanceof Error ? error.message : "Wystąpił błąd podczas rejestracji");

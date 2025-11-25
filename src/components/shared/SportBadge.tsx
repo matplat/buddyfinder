@@ -104,19 +104,19 @@ export const SportBadge: FC<SportBadgeProps> = ({ sport, onEdit, onDelete, varia
             <h3 className="text-lg font-semibold">{sportName}</h3>
             {isEditable && (
               <div className="absolute right-4 top-4 flex gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={onEdit} 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onEdit}
                   aria-label="Edytuj sport"
                   data-testid="edit-sport-button"
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={onDelete} 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onDelete}
                   aria-label="Usuń sport"
                   data-testid="delete-sport-button"
                 >

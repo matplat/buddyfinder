@@ -3,7 +3,7 @@
  */
 
 import { vi } from "vitest";
-import type { supabaseClient } from "@/db/supabase.client";
+import type { SupabaseClient } from "@/db/supabase.server";
 
 /**
  * Creates a mock Supabase client with typed methods
@@ -73,7 +73,7 @@ export const createMockSupabaseClient = () => {
     from: mockFrom,
     rpc: mockRpc,
     auth: mockAuth,
-  } as unknown as typeof supabaseClient;
+  } as unknown as SupabaseClient;
 
   return {
     mockClient,

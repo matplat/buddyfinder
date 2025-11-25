@@ -1,12 +1,12 @@
 import type { SportDto } from "@/types";
-import type { supabaseClient } from "@/db/supabase.client";
+import type { SupabaseClient } from "@/db/supabase.server";
 import type { Database } from "@/db/database.types";
 import { createLogger } from "@/lib/logger";
 
 export class SportService {
   private readonly logger = createLogger("SportService");
 
-  constructor(private readonly supabase: typeof supabaseClient) {
+  constructor(private readonly supabase: SupabaseClient) {
     if (!supabase) {
       this.logger.error("Supabase client is required but was not provided");
       throw new Error("Supabase client is required");

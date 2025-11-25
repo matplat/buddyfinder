@@ -22,13 +22,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabaseClient } from "@/db/supabase.client";
+import { resetPasswordSchema } from "@/lib/dto/auth.dto";
 
-const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "Podaj adres email").email("Nieprawidłowy format adresu email"),
-});
-
-type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+type ForgotPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export const ForgotPasswordForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,7 +36,8 @@ export const ForgotPasswordForm: FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<ForgotPasswordFormData>({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(resetPasswordSchema),
+    mode: "onChange", // Real-time validation on every change
   });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
@@ -48,14 +45,22 @@ export const ForgotPasswordForm: FC = () => {
     setApiError(null);
 
     try {
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(data.email, {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
+      // Call the /api/auth/reset-password endpoint
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email }),
       });
 
-      if (error) {
-        throw new Error(error.message);
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // Handle API errors (validation errors only, since server always returns 200 for security)
+        const errorMessage = responseData.error?.message || "Wystąpił błąd podczas wysyłania linku resetującego";
+        throw new Error(errorMessage);
       }
 
+      // Success - show confirmation message (security by obscurity - always shows success)
       setIsSuccess(true);
     } catch (error) {
       setApiError(error instanceof Error ? error.message : "Wystąpił błąd podczas wysyłania linku resetującego");

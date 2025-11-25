@@ -31,7 +31,7 @@ const loadTestEnv = () => {
       continue;
     }
 
-    if (value.startsWith("\"") && value.endsWith("\"")) {
+    if (value.startsWith('"') && value.endsWith('"')) {
       value = value.slice(1, -1);
     }
 

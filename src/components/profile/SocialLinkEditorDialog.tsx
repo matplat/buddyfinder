@@ -86,12 +86,7 @@ export const SocialLinkEditorDialog: FC<SocialLinkEditorDialogProps> = ({ isOpen
               )}
             />
             <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={onClose}
-                data-testid="social-link-editor--cancel-button"
-              >
+              <Button variant="outline" type="button" onClick={onClose} data-testid="social-link-editor--cancel-button">
                 Anuluj
               </Button>
               <Button type="submit" data-testid="social-link-editor--save-button">

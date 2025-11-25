@@ -1,11 +1,11 @@
 import type { ProfileDto, UpdateProfileCommand } from "@/types";
-import type { supabaseClient } from "@/db/supabase.client";
+import type { SupabaseClient } from "@/db/supabase.server";
 import { createLogger } from "@/lib/logger";
 
 export class ProfileService {
   private readonly logger = createLogger("ProfileService");
 
-  constructor(private readonly supabase: typeof supabaseClient) {}
+  constructor(private readonly supabase: SupabaseClient) {}
 
   async getCurrentUserProfile(userId: string): Promise<ProfileDto | null> {
     this.logger.info("Fetching user profile", { userId });

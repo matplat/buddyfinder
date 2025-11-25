@@ -2,9 +2,13 @@
  * MainView component
  * Main orchestrator that integrates MapView, ProfilePanel, MatchesPanel, and BottomNavigation
  * Manages panel states and synchronizes data between components
+ *
+ * Receives initialData from SSR (index.astro) and initializes Zustand store
+ * on mount. This ensures all components have access to cached user data
+ * without additional fetches.
  */
 
-import { type FC, useCallback } from "react";
+import { type FC, useCallback, useEffect } from "react";
 import { MapView } from "@/components/map/MapView";
 import { ProfilePanel } from "./ProfilePanel";
 import { MatchesPanel } from "./MatchesPanel";
@@ -13,8 +17,27 @@ import { DesktopNavigation } from "./DesktopNavigation";
 import { useMainView } from "./hooks/useMainView";
 import type { ProfileDataUpdates, LocationUpdate } from "./types";
 import { Toaster } from "@/components/ui/sonner";
+import { useUserDataStore } from "@/lib/stores/user-data-store";
+import type { ProfileDto, UserSportDto, SportDto } from "@/types";
+import type { UserLocation } from "@/lib/stores/types";
 
-export const MainView: FC = () => {
+/**
+ * Props for MainView component
+ */
+interface MainViewProps {
+  /**
+   * Initial data fetched during SSR to populate the store.
+   * Passed from index.astro after fetching profile, sports, and available sports.
+   */
+  initialData?: {
+    profile: ProfileDto | null;
+    sports: UserSportDto[];
+    availableSports: SportDto[];
+    location: UserLocation | null;
+  };
+}
+
+export const MainView: FC<MainViewProps> = ({ initialData }) => {
   const {
     state,
     isMobile,
@@ -24,6 +47,13 @@ export const MainView: FC = () => {
     handleLocationUpdate,
     closeMobilePanel,
   } = useMainView();
+
+  // Initialize store with SSR data on mount
+  useEffect(() => {
+    if (initialData) {
+      useUserDataStore.getState().initialize(initialData);
+    }
+  }, [initialData]);
 
   // Wrap handlers with useCallback for stable references
   const onProfileDataChange = useCallback(
