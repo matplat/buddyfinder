@@ -9,6 +9,7 @@ import {
   minutesToTime,
   timeToMinutes,
 } from "@/lib/config/sport-parameters.config";
+import type { SportParameterValue } from "@/types";
 
 /**
  * Basic sport data structure for display purposes
@@ -18,8 +19,8 @@ export interface SportBadgeData {
   sport_name?: string;
   name?: string;
   custom_range_km?: number | null;
-  params?: Record<string, string | number>;
-  parameters?: Record<string, string | number>;
+  params?: Record<string, string | number | SportParameterValue>;
+  parameters?: Record<string, string | number | SportParameterValue>;
 }
 
 interface SportBadgeProps {
@@ -39,34 +40,54 @@ export const SportBadge: FC<SportBadgeProps> = ({ sport, onEdit, onDelete, varia
   const sportParams = sport.params || sport.parameters || {};
 
   // Funkcja pomocnicza do formatowania wartości parametru
-  const formatParameterValue = (paramName: string, value: string | number): string => {
-    const paramConfig = getSportParametersConfig(sportName).find((p) => p.name === paramName);
-    if (!paramConfig) return String(value);
+  const formatParameterValue = (
+    paramName: string,
+    value: string | number | SportParameterValue
+  ): string => {
+    const paramConfig = getSportParametersConfig(sportName).find(
+      (p) => p.name === paramName
+    );
 
-    let formattedValue: string;
-    switch (paramConfig.type) {
-      case "pace":
-        formattedValue = typeof value === "number" ? secondsToPace(value) : String(value);
-        break;
-      case "time":
-        if (typeof value === "number") {
-          formattedValue = minutesToTime(value);
-        } else {
-          // Jeśli wartość jest stringiem, spróbuj skonwertować na minuty i sformatować
-          const minutes = timeToMinutes(value);
-          formattedValue = minutes !== null ? minutesToTime(minutes) : value;
-        }
-        break;
-      case "number":
-        formattedValue = String(value);
-        break;
-      case "enum":
-      default:
-        formattedValue = String(value);
-        break;
+    // Helper to format a single numeric value based on type
+    const formatSingleValue = (val: number) => {
+      if (!paramConfig) return String(val);
+      switch (paramConfig.type) {
+        case "pace":
+          return secondsToPace(val);
+        case "time":
+          return minutesToTime(val);
+        default:
+          return String(val);
+      }
+    };
+
+    if (!paramConfig) {
+      if (typeof value === "object" && value !== null && "mode" in value) {
+        return value.mode === "range"
+          ? `${value.min} - ${value.max}`
+          : String(value.min);
+      }
+      return String(value);
     }
 
-    return paramConfig.unit ? `${formattedValue} ${paramConfig.unit}` : formattedValue;
+    if (typeof value === "object" && value !== null && "mode" in value) {
+      if (value.mode === "range") {
+        return `${formatSingleValue(value.min)} - ${formatSingleValue(
+          value.max
+        )} ${paramConfig.unit || ""}`.trim();
+      }
+      // Exact mode
+      return `${formatSingleValue(value.min)} ${paramConfig.unit || ""}`.trim();
+    }
+
+    let formattedValue: string;
+    if (typeof value === "number") {
+      formattedValue = formatSingleValue(value);
+    } else {
+      formattedValue = String(value);
+    }
+
+    return `${formattedValue} ${paramConfig.unit || ""}`.trim();
   };
 
   // Funkcja pomocnicza do pobierania etykiety parametru

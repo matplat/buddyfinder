@@ -71,6 +71,15 @@ export type UpdateProfileCommand = Partial<
 // ############################################################################
 
 /**
+ * Represents a sport parameter value which can be a range or exact value.
+ */
+export type SportParameterValue = {
+  min: number;
+  max: number;
+  mode: "exact" | "range";
+};
+
+/**
  * DTO for a sport. Directly maps to the 'sports' table structure.
  */
 export type SportDto = Tables<"sports">;
@@ -79,21 +88,28 @@ export type SportDto = Tables<"sports">;
  * DTO for a sport associated with a user, including custom parameters and range.
  * It combines data from 'user_sports' and the sport's 'name' from the 'sports' table.
  */
-export type UserSportDto = Omit<Tables<"user_sports">, "user_id"> & {
+export type UserSportDto = Omit<Tables<"user_sports">, "user_id" | "parameters"> & {
   name: string;
+  parameters: Record<string, string | number | SportParameterValue>;
 };
 
 /**
  * Command model for adding a new sport to a user's profile.
  * The 'user_id' is omitted as it will be derived from the authenticated session.
  */
-export type AddUserSportCommand = Omit<TablesInsert<"user_sports">, "user_id">;
+export type AddUserSportCommand = Omit<TablesInsert<"user_sports">, "user_id" | "parameters"> & {
+  parameters: Record<string, string | number | SportParameterValue>;
+};
 
 /**
  * Command model for updating a user's sport-specific settings.
  * Allows partial updates to parameters and custom range.
  */
-export type UpdateUserSportCommand = Partial<Pick<Tables<"user_sports">, "parameters" | "custom_range_km">>;
+export type UpdateUserSportCommand = Partial<
+  Pick<Tables<"user_sports">, "custom_range_km">
+> & {
+  parameters?: Record<string, string | number | SportParameterValue>;
+};
 
 // ############################################################################
 // #

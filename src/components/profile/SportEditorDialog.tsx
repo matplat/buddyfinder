@@ -7,7 +7,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import type { SportDto, AddUserSportCommand, UpdateUserSportCommand } from "@/types";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import type { SportDto, AddUserSportCommand, UpdateUserSportCommand, SportParameterValue } from "@/types";
 import type { UserSportViewModel } from "@/components/shared/types/sport";
 import {
   getSportParametersConfig,
@@ -43,7 +45,20 @@ const formSchema = z.object({
     .min(1, "Zasięg musi być większy niż 0")
     .max(100, "Zasięg nie może przekraczać 100 km")
     .optional(),
-  parameters: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+  parameters: z
+    .record(
+      z.string(),
+      z.union([
+        z.string(),
+        z.number(),
+        z.object({
+          min: z.number(),
+          max: z.number(),
+          mode: z.enum(["exact", "range"]),
+        }),
+      ])
+    )
+    .optional(),
 });
 
 export const SportEditorDialog: FC<SportEditorDialogProps> = ({
@@ -62,7 +77,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
         ? {
             sport_id: sportToEdit.sport_id,
             custom_range_km: sportToEdit.custom_range_km ?? undefined,
-            parameters: sportToEdit.params as Record<string, string | number>,
+            parameters: sportToEdit.params as Record<string, string | number | SportParameterValue>,
           }
         : {
             sport_id: undefined,
@@ -93,7 +108,7 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
       form.reset({
         sport_id: sportToEdit.sport_id,
         custom_range_km: sportToEdit.custom_range_km ?? undefined,
-        parameters: sportToEdit.params as Record<string, string | number>,
+        parameters: sportToEdit.params as Record<string, string | number | SportParameterValue>,
       });
     } else if (isOpen && mode === "add") {
       form.reset({
@@ -105,56 +120,44 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
   }, [isOpen, mode, sportToEdit, form]);
 
   /**
-   * Konwertuje wartość z formatu wyświetlanego do formatu zapisywanego
+   * Konwertuje wartość z formatu wyświetlanego do formatu zapisywanego (liczba)
    */
-  const convertToStorageValue = (value: string, paramType: ParameterConfig["type"]): number | string => {
+  const parseInputValue = (value: string, paramType: ParameterConfig["type"]): number | null => {
     switch (paramType) {
-      case "pace": {
-        const seconds = paceToSeconds(value);
-        return seconds !== null ? seconds : value;
-      }
-      case "time": {
-        const minutes = timeToMinutes(value);
-        return minutes !== null ? minutes : value;
-      }
+      case "pace":
+        return paceToSeconds(value);
+      case "time":
+        return timeToMinutes(value);
       case "number":
-        return parseFloat(value) || 0;
-      case "enum":
+        return parseFloat(value);
       default:
-        return value;
+        return null;
     }
   };
 
   /**
-   * Konwertuje wartość z formatu zapisanego do formatu wyświetlanego
+   * Konwertuje wartość liczbową do formatu wyświetlanego (string)
    */
-  const convertToDisplayValue = (value: string | number, paramType: ParameterConfig["type"]): string => {
+  const formatDisplayValue = (value: number, paramType: ParameterConfig["type"]): string => {
     switch (paramType) {
       case "pace":
-        return typeof value === "number" ? secondsToPace(value) : String(value);
+        return secondsToPace(value);
       case "time":
-        return typeof value === "number" ? minutesToTime(value) : String(value);
+        return minutesToTime(value);
       default:
         return String(value);
     }
   };
 
-  const handleParameterChange = (paramName: string, value: string, paramConfig: ParameterConfig) => {
-    const baseParams = { ...currentParameters } as Record<string, string | number>;
-
-    if (value === "") {
-      const remainingParams = Object.fromEntries(
-        Object.entries(baseParams).filter(([key]) => key !== paramName)
-      ) as Record<string, string | number>;
-      form.setValue("parameters", remainingParams);
-      return;
-    }
-
+  const handleParameterChange = (
+    paramName: string,
+    value: string | number | SportParameterValue,
+  ) => {
+    const baseParams = { ...currentParameters };
     const updatedParams = {
       ...baseParams,
-      [paramName]: convertToStorageValue(value, paramConfig.type),
+      [paramName]: value,
     };
-
     form.setValue("parameters", updatedParams);
   };
 
@@ -225,17 +228,16 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
             />
 
             {sportParametersConfig.map((paramConfig) => {
-              const currentValue = currentParameters[paramConfig.name];
-              const displayValue =
-                currentValue !== undefined ? convertToDisplayValue(currentValue, paramConfig.type) : "";
+              const rawValue = currentParameters[paramConfig.name];
 
               if (paramConfig.type === "enum") {
+                const displayValue = typeof rawValue === "string" ? rawValue : "";
                 return (
                   <FormItem key={paramConfig.name}>
                     <FormLabel>{paramConfig.label}</FormLabel>
                     <Select
                       value={displayValue}
-                      onValueChange={(value) => handleParameterChange(paramConfig.name, value, paramConfig)}
+                      onValueChange={(value) => handleParameterChange(paramConfig.name, value)}
                     >
                       <FormControl>
                         <SelectTrigger data-testid={`sport-editor--param-${paramConfig.name}`}>
@@ -255,25 +257,106 @@ export const SportEditorDialog: FC<SportEditorDialogProps> = ({
                 );
               }
 
+              // Numeric types (number, pace, time)
+              let mode: "exact" | "range" = "exact";
+              let minVal = paramConfig.min || 0;
+              let maxVal = paramConfig.min || 0;
+
+              if (typeof rawValue === "object" && rawValue !== null && "mode" in rawValue) {
+                mode = rawValue.mode;
+                minVal = rawValue.min;
+                maxVal = rawValue.max;
+              } else if (typeof rawValue === "number") {
+                minVal = rawValue;
+                maxVal = rawValue;
+              }
+
+              const handleModeChange = (checked: boolean) => {
+                const newMode = checked ? "range" : "exact";
+                // When switching to range, ensure max >= min. If exact, max = min.
+                const newMax = checked
+                  ? minVal
+                  : (minVal + maxVal) / 2;
+
+                handleParameterChange(paramConfig.name, {
+                  min: checked ? minVal : (minVal + maxVal) / 2,
+                  max: newMax,
+                  mode: newMode,
+                });
+              };
+
+              const handleSliderChange = (value: number[]) => {
+                handleParameterChange(paramConfig.name, {
+                  min: value[0],
+                  max: value[1],
+                  mode: "range",
+                });
+              };
+
+              const handleInputChange = (type: "min" | "max", valueStr: string) => {
+                const parsed = parseInputValue(valueStr, paramConfig.type);
+                if (parsed === null) return;
+
+                const newMin = type === "min" ? parsed : minVal;
+                const newMax = type === "max" ? parsed : maxVal;
+
+                handleParameterChange(paramConfig.name, {
+                  min: newMin,
+                  max: mode === "exact" ? newMin : newMax,
+                  mode: mode,
+                });
+              };
+
               return (
-                <FormItem key={paramConfig.name}>
-                  <FormLabel>
-                    {paramConfig.label}
-                    {paramConfig.unit && ` (${paramConfig.unit})`}
-                  </FormLabel>
-                  <FormControl>
+                <div key={paramConfig.name} className="space-y-3 rounded-lg border p-3">
+                  <div className="flex items-center justify-between">
+                    <FormLabel>
+                      {paramConfig.label}
+                      {paramConfig.unit && ` (${paramConfig.unit})`}
+                    </FormLabel>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">Zakres</span>
+                      <Switch
+                        checked={mode === "range"}
+                        onCheckedChange={handleModeChange}
+                        data-testid={`sport-editor--param-${paramConfig.name}-mode-switch`}
+                      />
+                    </div>
+                  </div>
+
+                  {mode === "range" ? (
+                    <div className="space-y-4 pt-2">
+                      <Slider
+                        value={[minVal, maxVal]}
+                        min={paramConfig.min}
+                        max={paramConfig.max}
+                        step={paramConfig.step || 1}
+                        onValueChange={handleSliderChange}
+                        className="py-2"
+                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={formatDisplayValue(minVal, paramConfig.type)}
+                          onChange={(e) => handleInputChange("min", e.target.value)}
+                          className="h-8"
+                        />
+                        <span className="flex items-center text-muted-foreground">-</span>
+                        <Input
+                          value={formatDisplayValue(maxVal, paramConfig.type)}
+                          onChange={(e) => handleInputChange("max", e.target.value)}
+                          className="h-8"
+                        />
+                      </div>
+                    </div>
+                  ) : (
                     <Input
-                      type={paramConfig.type === "number" ? "number" : "text"}
-                      value={displayValue}
-                      onChange={(e) => handleParameterChange(paramConfig.name, e.target.value, paramConfig)}
+                      value={formatDisplayValue(minVal, paramConfig.type)}
+                      onChange={(e) => handleInputChange("min", e.target.value)}
                       placeholder={paramConfig.placeholder}
-                      min={paramConfig.min}
-                      max={paramConfig.max}
                       data-testid={`sport-editor--param-${paramConfig.name}`}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  )}
+                </div>
               );
             })}
 

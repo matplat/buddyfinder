@@ -14,6 +14,7 @@ export interface ParameterConfig {
   options?: string[];
   min?: number;
   max?: number;
+  step?: number;
 }
 
 export type SportParametersConfig = Record<string, ParameterConfig[]>;
@@ -69,7 +70,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "km",
       placeholder: "10",
       min: 1,
-      max: 200,
+      max: 50,
+      step: 1,
     },
     {
       name: "tempo",
@@ -77,6 +79,9 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       type: "pace",
       unit: "min/km",
       placeholder: "5:30",
+      min: 120,
+      max: 600,
+      step: 5,
     },
   ],
   "rower szosowy": [
@@ -86,8 +91,9 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       type: "number",
       unit: "km",
       placeholder: "50",
-      min: 1,
+      min: 0,
       max: 200,
+      step: 5,
     },
     {
       name: "prędkość",
@@ -96,7 +102,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "km/h",
       placeholder: "30",
       min: 10,
-      max: 60,
+      max: 50,
+      step: 1,
     },
   ],
   "rower mtb": [
@@ -107,7 +114,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "km",
       placeholder: "25",
       min: 1,
-      max: 200,
+      max: 100,
+      step: 1,
     },
     {
       name: "czas",
@@ -115,6 +123,9 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       type: "time",
       unit: "",
       placeholder: "1:30h",
+      min: 15,
+      max: 360,
+      step: 15,
     },
     {
       name: "przewyższenie",
@@ -123,7 +134,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "m",
       placeholder: "800",
       min: 0,
-      max: 5000,
+      max: 2000,
+      step: 50,
     },
   ],
   "pływanie w basenie": [
@@ -134,7 +146,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "m",
       placeholder: "1500",
       min: 100,
-      max: 10000,
+      max: 6000,
+      step: 50,
     },
     {
       name: "tempo",
@@ -142,6 +155,9 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       type: "pace",
       unit: "min/100m",
       placeholder: "2:00",
+      min: 30,
+      max: 240,
+      step: 5,
     },
   ],
   "pływanie na wodach otwartych": [
@@ -152,7 +168,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "m",
       placeholder: "2000",
       min: 100,
-      max: 20000,
+      max: 10000,
+      step: 100,
     },
     {
       name: "tempo",
@@ -160,6 +177,9 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       type: "pace",
       unit: "min/100m",
       placeholder: "2:00",
+      min: 30,
+      max: 240,
+      step: 5,
     },
   ],
   rolki: [
@@ -170,7 +190,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "km",
       placeholder: "15",
       min: 1,
-      max: 100,
+      max: 50,
+      step: 1,
     },
     {
       name: "styl",
@@ -188,7 +209,8 @@ export const SPORT_PARAMETERS_CONFIG: SportParametersConfig = {
       unit: "m",
       placeholder: "30",
       min: 5,
-      max: 100,
+      max: 50,
+      step: 1,
     },
   ],
   tenis: [

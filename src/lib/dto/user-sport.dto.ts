@@ -7,7 +7,20 @@ import { z } from "zod";
  */
 const SportParametersBase = z
   .object({})
-  .catchall(z.union([z.number(), z.string(), z.boolean(), z.array(z.string()), z.array(z.number())]));
+  .catchall(
+    z.union([
+      z.number(),
+      z.string(),
+      z.boolean(),
+      z.array(z.string()),
+      z.array(z.number()),
+      z.object({
+        min: z.number(),
+        max: z.number(),
+        mode: z.enum(["exact", "range"]),
+      }),
+    ])
+  );
 
 /**
  * Schema for sport parameters with non-empty validation.
